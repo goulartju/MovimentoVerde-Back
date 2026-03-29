@@ -1,5 +1,5 @@
 using FluentValidation;
-using Mov.Application.Dtos.Calendario;
+using Mov.Domain.Dtos.Calendario;
 
 namespace Mov.Application.Validators.Calendario;
 
@@ -11,8 +11,7 @@ public class UpdateCalendarioValidator : AbstractValidator<UpdateCalendarioDto>
             .NotEmpty().WithMessage("Id é obrigatório");
 
         RuleFor(x => x.Ano)
-            .NotEmpty().WithMessage("Ano é obrigatório")
-            .Length(4).WithMessage("Ano deve conter 4 dígitos");
+            .NotEmpty().WithMessage("Ano é obrigatório");
 
         RuleFor(x => x.DataInicio)
             .NotEmpty().WithMessage("Data de início é obrigatória")

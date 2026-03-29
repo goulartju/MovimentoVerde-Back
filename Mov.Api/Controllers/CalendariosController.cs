@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Mov.Application.Dtos.Calendario;
-using Mov.Application.Services;
+using Mov.Domain.Dtos.Calendario;
+using Mov.Domain.Interfaces.Services;
 
 namespace Mov.Api.Controllers;
 

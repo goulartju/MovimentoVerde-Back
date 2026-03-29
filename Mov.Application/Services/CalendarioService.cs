@@ -1,18 +1,11 @@
 using FluentValidation;
-using Mov.Application.Dtos.Calendario;
+using Mov.Domain.Dtos.Calendario;
 using Mov.Domain.Entities;
 using Mov.Domain.Interfaces.Repositories;
+using Mov.Domain.Interfaces.Services;
 
 namespace Mov.Application.Services;
 
-public interface ICalendarioService
-{
-    Task<IEnumerable<CalendarioDto>> GetAllAsync();
-    Task<CalendarioDto?> GetByIdAsync(Guid id);
-    Task<CalendarioDto> CreateAsync(CreateCalendarioDto dto);
-    Task<CalendarioDto> UpdateAsync(UpdateCalendarioDto dto);
-    Task DeleteAsync(Guid id);
-}
 
 public class CalendarioService : ICalendarioService
 {
@@ -30,19 +23,20 @@ public class CalendarioService : ICalendarioService
         _updateValidator = updateValidator;
     }
 
-    public async Task<IEnumerable<CalendarioDto>> GetAllAsync()
+    public async Task<IEnumerable<Calendario>> GetAllAsync()
     {
         var items = await _repository.GetAllAsync();
-        return items.Select(MapToDto);
+        return items.ToList();
     }
 
-    public async Task<CalendarioDto?> GetByIdAsync(Guid id)
+    public async Task<Calendario?> GetByIdAsync(Guid id)
     {
         var item = await _repository.GetByIdAsync(id);
-        return item != null ? MapToDto(item) : null;
+       
+        return item;
     }
 
-    public async Task<CalendarioDto> CreateAsync(CreateCalendarioDto dto)
+    public async Task<Calendario> CreateAsync(CreateCalendarioDto dto)
     {
         await _createValidator.ValidateAndThrowAsync(dto);
 
@@ -50,14 +44,15 @@ public class CalendarioService : ICalendarioService
         {
             Ano = dto.Ano,
             DataInicio = dto.DataInicio,
-            DataFim = dto.DataFim
+            DataFim = dto.DataFim,
+            Ativo = dto.Ativo
         };
 
         var created = await _repository.CreateAsync(calendario);
-        return MapToDto(created);
+        return created;
     }
 
-    public async Task<CalendarioDto> UpdateAsync(UpdateCalendarioDto dto)
+    public async Task<Calendario> UpdateAsync(UpdateCalendarioDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
@@ -68,9 +63,10 @@ public class CalendarioService : ICalendarioService
         existing.Ano = dto.Ano;
         existing.DataInicio = dto.DataInicio;
         existing.DataFim = dto.DataFim;
+        existing.Ativo = dto.Ativo;
 
         var updated = await _repository.UpdateAsync(existing);
-        return MapToDto(updated);
+        return updated;
     }
 
     public async Task DeleteAsync(Guid id)
@@ -82,14 +78,4 @@ public class CalendarioService : ICalendarioService
         await _repository.DeleteAsync(id);
     }
 
-    private static CalendarioDto MapToDto(Calendario calendario)
-    {
-        return new CalendarioDto
-        {
-            Id = calendario.Id,
-            Ano = calendario.Ano,
-            DataInicio = calendario.DataInicio,
-            DataFim = calendario.DataFim
-        };
-    }
 }

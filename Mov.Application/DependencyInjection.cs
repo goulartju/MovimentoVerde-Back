@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Mov.Application.Dtos.Calendario;
-using Mov.Application.Services;
+using Mov.Domain.Dtos.Calendario;
 using Mov.Application.Validators.Calendario;
+using Mov.Application.Services;
+using Mov.Domain.Interfaces.Services;
 
 namespace Mov.Application
 {
