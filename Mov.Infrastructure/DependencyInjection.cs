@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Mov.Domain.Interfaces.Repositories;
 using Mov.Infrastructure.Data;
+using Mov.Infrastructure.Repositories;
 
 namespace Mov.Infrastructure
 {
@@ -17,6 +19,9 @@ namespace Mov.Infrastructure
                 options.UseMySql(connectionString,
                     ServerVersion.AutoDetect(connectionString),
                     b => b.MigrationsAssembly("Eco.Infrastructure")));
+
+            // Register repositories
+            services.AddScoped<ICalendarioRepository, CalendarioRepository>();
 
             return services;
         }
