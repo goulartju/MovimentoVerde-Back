@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Mov.Api/Mov.Api.csproj" />
+  <Project Path="Mov.Application/Mov.Application.csproj" />
+  <Project Path="Mov.Domain/Mov.Domain.csproj" />
+  <Project Path="Mov.Infrastructure/Mov.Infrastructure.csproj" />
+</Solution>
