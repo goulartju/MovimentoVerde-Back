@@ -13,4 +13,5 @@ public class Matricula
     public Aluno? Aluno { get; set; }
     public Turma? Turma { get; set; }
     public Calendario? Calendario { get; set; }
+    public ICollection<Doacao> Doacoes { get; set; } = new List<Doacao>();
 }

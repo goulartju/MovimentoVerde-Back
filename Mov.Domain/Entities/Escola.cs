@@ -17,5 +17,6 @@ namespace Mov.Domain.Entities
         // Propriedades de navegação
         public ICollection<Calendario> Calendarios { get; set; } = new List<Calendario>();
         public ICollection<Turma> Turmas { get; set; } = new List<Turma>();
+        public ICollection<Doacao> Doacoes { get; set; } = new List<Doacao>();
     }
 }

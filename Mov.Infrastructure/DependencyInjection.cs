@@ -18,7 +18,7 @@ namespace Mov.Infrastructure
             services.AddDbContext<AppDbContext>(options =>
                 options.UseMySQL(connectionString));
 
-            // Register repositories
+             // Register repositories
             services.AddScoped<ICalendarioRepository, CalendarioRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IEscolaRepository, EscolaRepository>();
@@ -26,6 +26,7 @@ namespace Mov.Infrastructure
             services.AddScoped<IRepresentanteTurmaRepository, RepresentanteTurmaRepository>();
             services.AddScoped<IAlunoRepository, AlunoRepository>();
             services.AddScoped<IMatriculaRepository, MatriculaRepository>();
+            services.AddScoped<IDoacaoRepository, DoacaoRepository>();
 
             return services;
         }
