@@ -42,6 +42,7 @@ public class CalendarioService : ICalendarioService
 
         var calendario = new Calendario
         {
+            EscolaId = dto.EscolaId,
             Ano = dto.Ano,
             DataInicio = dto.DataInicio,
             DataFim = dto.DataFim,
@@ -60,6 +61,7 @@ public class CalendarioService : ICalendarioService
         if (existing == null)
             throw new KeyNotFoundException($"Calendário com ID {dto.Id} não encontrado");
 
+        existing.EscolaId = dto.EscolaId;
         existing.Ano = dto.Ano;
         existing.DataInicio = dto.DataInicio;
         existing.DataFim = dto.DataFim;

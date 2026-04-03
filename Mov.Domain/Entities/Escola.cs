@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Mov.Domain.Entities
 {
@@ -11,8 +10,11 @@ namespace Mov.Domain.Entities
         public required string Municipio { get; set; }
         public required string Endereco { get; set; }
         public required string Diretor { get; set; }
-        public Boolean Ativo { get; set; }
+        public bool Ativo { get; set; }
         public DateTime CriadoEm { get; set; }
         public DateTime? AtualizadoEm { get; set; }
+
+        // Propriedade de navegação - coleção de calendários
+        public ICollection<Calendario> Calendarios { get; set; } = new List<Calendario>();
     }
 }

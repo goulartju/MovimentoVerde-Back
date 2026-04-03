@@ -2,8 +2,9 @@ namespace Mov.Domain.Dtos.Calendario;
 
 public class CreateCalendarioDto
 {
+    public Guid EscolaId { get; set; }
     public int Ano { get; set; }
     public DateTime DataInicio { get; set; }
     public DateTime DataFim { get; set; }
-    public Boolean Ativo { get; set; }
+    public bool Ativo { get; set; } = true;
 }
