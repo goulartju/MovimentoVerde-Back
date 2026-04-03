@@ -23,9 +23,7 @@ namespace Mov.Infrastructure.Data
 
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-            optionsBuilder.UseMySql(connectionString,
-                ServerVersion.AutoDetect(connectionString),
-                b => b.MigrationsAssembly("Mov.Infrastructure"));
+            optionsBuilder.UseMySQL(connectionString);
 
             return new AppDbContext(optionsBuilder.Options);
         }

@@ -16,12 +16,11 @@ namespace Mov.Infrastructure
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseMySql(connectionString,
-                    ServerVersion.AutoDetect(connectionString),
-                    b => b.MigrationsAssembly("Eco.Infrastructure")));
+                options.UseMySQL(connectionString));
 
             // Register repositories
             services.AddScoped<ICalendarioRepository, CalendarioRepository>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
             return services;
         }

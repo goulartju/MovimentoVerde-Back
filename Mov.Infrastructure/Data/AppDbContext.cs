@@ -9,5 +9,6 @@ namespace Mov.Infrastructure.Data
             : base(options) { }
 
         public DbSet<Calendario> Calendarios { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
