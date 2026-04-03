@@ -7,6 +7,7 @@ using Mov.Domain.Dtos.Turma;
 using Mov.Domain.Dtos.Aluno;
 using Mov.Domain.Dtos.Matricula;
 using Mov.Domain.Dtos.Doacao;
+using Mov.Domain.Dtos.Auth;
 using Mov.Application.Validators.Calendario;
 using Mov.Application.Validators.Usuario;
 using Mov.Application.Validators.Escola;
@@ -14,6 +15,7 @@ using Mov.Application.Validators.Turma;
 using Mov.Application.Validators.Aluno;
 using Mov.Application.Validators.Matricula;
 using Mov.Application.Validators.Doacao;
+using Mov.Application.Validators.Auth;
 using Mov.Application.Services;
 using Mov.Domain.Interfaces.Services;
 
@@ -38,6 +40,10 @@ namespace Mov.Application
             services.AddScoped<IValidator<UpdateMatriculaDto>, UpdateMatriculaValidator>();
             services.AddScoped<IValidator<CreateDoacaoDto>, CreateDoacaoValidator>();
             services.AddScoped<IValidator<UpdateDoacaoDto>, UpdateDoacaoValidator>();
+            services.AddScoped<IValidator<LoginDto>, LoginValidator>();
+            services.AddScoped<IValidator<RegisterDto>, RegisterValidator>();
+            services.AddScoped<IValidator<CreateUserDto>, CreateUserValidator>();
+            services.AddScoped<IValidator<ChangePasswordDto>, ChangePasswordValidator>();
 
             // services
             services.AddScoped<ICalendarioService, CalendarioService>();
@@ -47,6 +53,7 @@ namespace Mov.Application
             services.AddScoped<IAlunoService, AlunoService>();
             services.AddScoped<IMatriculaService, MatriculaService>();
             services.AddScoped<IDoacaoService, DoacaoService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

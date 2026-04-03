@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Mov.Domain.Entities;
+using Mov.Domain.Enums;
 
 namespace Mov.Infrastructure.Data
 {
@@ -76,6 +77,25 @@ namespace Mov.Infrastructure.Data
                 .WithMany()
                 .HasForeignKey(d => d.CalendarioId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Seed do primeiro usuário admin
+            var adminId = Guid.NewGuid();
+            var senhaHashAdmin = BCrypt.Net.BCrypt.HashPassword("AdminSenha123");
+
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario
+                {
+                    Id = adminId,
+                    Nome = "Administrador",
+                    Email = "admin@example.com",
+                    SenhaHash = senhaHashAdmin,
+                    DataNascimento = new DateTime(1990, 1, 1),
+                    Cargo = "Gerente do Sistema",
+                    Permissao = PermissaoEnum.Administrador,
+                    Ativo = true,
+                    CriadoEm = DateTime.UtcNow
+                }
+            );
         }
     }
 }

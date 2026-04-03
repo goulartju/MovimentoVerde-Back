@@ -1,0 +1,28 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Mov.Infrastructure.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddSenhaHashToUsuario : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AddColumn<string>(
+                name: "SenhaHash",
+                table: "Usuarios",
+                type: "longtext",
+                nullable: false);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "SenhaHash",
+                table: "Usuarios");
+        }
+    }
+}

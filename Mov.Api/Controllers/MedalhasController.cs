@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Mov.Domain.Dtos.Medalha;
 using Mov.Domain.Interfaces.Services;
 
@@ -6,6 +7,7 @@ namespace Mov.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class MedalhasController : ControllerBase
 {
     private readonly IMedalhaService _service;
