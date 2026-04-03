@@ -14,7 +14,8 @@ namespace Mov.Domain.Entities
         public DateTime CriadoEm { get; set; }
         public DateTime? AtualizadoEm { get; set; }
 
-        // Propriedade de navegação - coleção de calendários
+        // Propriedades de navegação
         public ICollection<Calendario> Calendarios { get; set; } = new List<Calendario>();
+        public ICollection<Turma> Turmas { get; set; } = new List<Turma>();
     }
 }

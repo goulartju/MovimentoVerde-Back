@@ -17,12 +17,12 @@ namespace Mov.Infrastructure.Repositories
 
         public async Task<IEnumerable<Escola>> GetAllAsync()
         {
-            return await _context.Escola.ToListAsync();
+            return await _context.Escolas.Where(e => e.Ativo).ToListAsync();
         }
 
         public async Task<Escola?> GetByIdAsync(Guid id)
         {
-            return await _context.Escola.FindAsync(id);
+            return await _context.Escolas.FirstOrDefaultAsync(e => e.Id == id && e.Ativo);
         }
 
         public async Task<Escola> CreateAsync(Escola escola)
@@ -30,13 +30,15 @@ namespace Mov.Infrastructure.Repositories
             if (escola.Id == Guid.Empty)
                 escola.Id = Guid.NewGuid();
 
-            await _context.Escola.AddAsync(escola);
+            escola.CriadoEm = DateTime.UtcNow;
+            await _context.Escolas.AddAsync(escola);
             await _context.SaveChangesAsync();
             return escola;
         }
 
         public async Task<Escola> UpdateAsync(Escola escola)
         {
+            escola.AtualizadoEm = DateTime.UtcNow;
             _context.Entry(escola).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return escola;
@@ -44,13 +46,14 @@ namespace Mov.Infrastructure.Repositories
 
         public async Task DeleteAsync(Guid id)
         {
-            var escola = await _context.Escola.FindAsync(id);
+            var escola = await _context.Escolas.FindAsync(id);
             if (escola != null)
             {
-                _context.Escola.Remove(escola);
+                escola.Ativo = false;
+                escola.AtualizadoEm = DateTime.UtcNow;
+                _context.Escolas.Update(escola);
                 await _context.SaveChangesAsync();
             }
         }
-
     }
 }
