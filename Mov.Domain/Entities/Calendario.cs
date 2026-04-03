@@ -11,4 +11,5 @@ public class Calendario
 
     // Propriedade de navegação
     public Escola? Escola { get; set; }
+    public ICollection<Matricula> Matriculas { get; set; } = new List<Matricula>();
 }

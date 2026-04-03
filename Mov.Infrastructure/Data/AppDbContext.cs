@@ -13,6 +13,8 @@ namespace Mov.Infrastructure.Data
         public DbSet<Escola> Escolas { get; set; }
         public DbSet<Turma> Turmas { get; set; }
         public DbSet<RepresentanteTurma> RepresentanteTurmas { get; set; }
+        public DbSet<Aluno> Alunos { get; set; }
+        public DbSet<Matricula> Matriculas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +31,27 @@ namespace Mov.Infrastructure.Data
                 .HasOne(rt => rt.Usuario)
                 .WithMany()
                 .HasForeignKey(rt => rt.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar relacionamento entre Matricula e Aluno
+            modelBuilder.Entity<Matricula>()
+                .HasOne(m => m.Aluno)
+                .WithMany(a => a.Matriculas)
+                .HasForeignKey(m => m.AlunoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar relacionamento entre Matricula e Turma
+            modelBuilder.Entity<Matricula>()
+                .HasOne(m => m.Turma)
+                .WithMany(t => t.Matriculas)
+                .HasForeignKey(m => m.TurmaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configurar relacionamento entre Matricula e Calendario
+            modelBuilder.Entity<Matricula>()
+                .HasOne(m => m.Calendario)
+                .WithMany(c => c.Matriculas)
+                .HasForeignKey(m => m.CalendarioId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

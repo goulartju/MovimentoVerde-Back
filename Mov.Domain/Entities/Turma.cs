@@ -16,4 +16,5 @@ public class Turma
     public Escola? Escola { get; set; }
     public Calendario? Calendario { get; set; }
     public ICollection<RepresentanteTurma> Representantes { get; set; } = new List<RepresentanteTurma>();
+    public ICollection<Matricula> Matriculas { get; set; } = new List<Matricula>();
 }

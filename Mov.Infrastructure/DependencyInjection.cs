@@ -24,6 +24,8 @@ namespace Mov.Infrastructure
             services.AddScoped<IEscolaRepository, EscolaRepository>();
             services.AddScoped<ITurmaRepository, TurmaRepository>();
             services.AddScoped<IRepresentanteTurmaRepository, RepresentanteTurmaRepository>();
+            services.AddScoped<IAlunoRepository, AlunoRepository>();
+            services.AddScoped<IMatriculaRepository, MatriculaRepository>();
 
             return services;
         }
