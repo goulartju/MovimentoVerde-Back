@@ -23,19 +23,19 @@ public class UsuarioService : IUsuarioService
         _updateValidator = updateValidator;
     }
 
-    public async Task<IEnumerable<UsuarioDto>> GetAllAsync()
+    public async Task<IEnumerable<Usuario>> GetAllAsync()
     {
         var usuarios = await _repository.GetAllAsync();
-        return usuarios.Select(MapToDto);
+        return usuarios;
     }
 
-    public async Task<UsuarioDto?> GetByIdAsync(Guid id)
+    public async Task<Usuario?> GetByIdAsync(Guid id)
     {
         var usuario = await _repository.GetByIdAsync(id);
-        return usuario != null ? MapToDto(usuario) : null;
+        return usuario; 
     }
 
-    public async Task<UsuarioDto> CreateAsync(CreateUsuarioDto dto)
+    public async Task<Usuario> CreateAsync(CreateUsuarioDto dto)
     {
         await _createValidator.ValidateAndThrowAsync(dto);
 
@@ -54,10 +54,10 @@ public class UsuarioService : IUsuarioService
         };
 
         var criado = await _repository.CreateAsync(usuario);
-        return MapToDto(criado);
+        return criado;
     }
 
-    public async Task<UsuarioDto> UpdateAsync(UpdateUsuarioDto dto)
+    public async Task<Usuario> UpdateAsync(UpdateUsuarioDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
@@ -81,7 +81,7 @@ public class UsuarioService : IUsuarioService
         usuario.Ativo = dto.Ativo;
 
         var atualizado = await _repository.UpdateAsync(usuario);
-        return MapToDto(atualizado);
+        return atualizado;
     }
 
     public async Task DeleteAsync(Guid id)
@@ -93,19 +93,4 @@ public class UsuarioService : IUsuarioService
         await _repository.DeleteAsync(id);
     }
 
-    private static UsuarioDto MapToDto(Usuario usuario)
-    {
-        return new UsuarioDto
-        {
-            Id = usuario.Id,
-            Nome = usuario.Nome,
-            Email = usuario.Email,
-            DataNascimento = usuario.DataNascimento,
-            Cargo = usuario.Cargo,
-            Permissao = usuario.Permissao,
-            Ativo = usuario.Ativo,
-            CriadoEm = usuario.CriadoEm,
-            AtualizadoEm = usuario.AtualizadoEm
-        };
-    }
 }

@@ -10,5 +10,7 @@ namespace Mov.Infrastructure.Data
 
         public DbSet<Calendario> Calendarios { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+
+        public DbSet<Escola> Escola { get; set; }
     }
 }
