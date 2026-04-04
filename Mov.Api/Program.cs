@@ -17,19 +17,16 @@ builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
 builder.Services.AddSingleton(jwtSettings);
 
 // Add CORS
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ReactApp", policy =>
-    {
-        policy
+    options.AddPolicy("CorsPolicy", policy => policy
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .WithOrigins("http://localhost:3000", "http://localhost:3001")
-            .AllowCredentials();
-    });
+            .AllowAnyOrigin());
+            
 });
 
-// Add Authentication with JWT
 builder.Services
     .AddAuthentication(x =>
     {
@@ -77,12 +74,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// CORS must be before everything else
+app.UseCors("CorsPolicy");
+
 app.UseHttpsRedirection();
 
-// Use CORS before authentication
-app.UseCors("ReactApp");
-
-// Authentication and Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
