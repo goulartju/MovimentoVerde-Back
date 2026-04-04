@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mov.Domain.Dtos.Usuario;
 using Mov.Domain.Enums;
@@ -5,6 +6,7 @@ using Mov.Domain.Interfaces.Services;
 
 namespace Mov.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UsuariosController : ControllerBase
