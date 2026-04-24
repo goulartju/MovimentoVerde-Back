@@ -18,7 +18,7 @@ public class TurmaRepository : ITurmaRepository
     {
         return await _context.Turmas
             .Where(t => t.Ativo)
-            .Include(t => t.Representantes)
+            .Include(t => t.Representante)
             .ThenInclude(r => r.Usuario)
             .ToListAsync();
     }
@@ -26,7 +26,7 @@ public class TurmaRepository : ITurmaRepository
     public async Task<Turma?> GetByIdAsync(Guid id)
     {
         return await _context.Turmas
-            .Include(t => t.Representantes)
+            .Include(t => t.Representante)
             .ThenInclude(r => r.Usuario)
             .FirstOrDefaultAsync(t => t.Id == id && t.Ativo);
     }
@@ -35,7 +35,7 @@ public class TurmaRepository : ITurmaRepository
     {
         return await _context.Turmas
             .Where(t => t.EscolaId == escolaId && t.Ativo)
-            .Include(t => t.Representantes)
+            .Include(t => t.Representante)
             .ThenInclude(r => r.Usuario)
             .ToListAsync();
     }

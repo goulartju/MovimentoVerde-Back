@@ -4,9 +4,10 @@ public class CreateTurmaDto
 {
     public Guid EscolaId { get; set; }
     public string Nome { get; set; } = string.Empty;
-    public int AnoEscolar { get; set; }
+    // receive the enum key as string, e.g. "PRIMEIRO"
+    public string AnoEscolar { get; set; } = string.Empty;
     public string Turno { get; set; } = string.Empty;
     public Guid CalendarioId { get; set; }
     public bool Ativo { get; set; } = true;
-    public ICollection<RepresentanteDto>? Representantes { get; set; }
+    public Guid RepresentanteId { get; set; }
 }

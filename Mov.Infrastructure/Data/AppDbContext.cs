@@ -32,11 +32,11 @@ namespace Mov.Infrastructure.Data
                 entity.Property(e => e.Diretor).HasMaxLength(200);
             });
 
-            // Configurar relacionamento entre Turma e RepresentanteTurma
+            // Configurar relacionamento entre Turma e RepresentanteTurma (um para um)
             modelBuilder.Entity<RepresentanteTurma>()
                 .HasOne(rt => rt.Turma)
-                .WithMany(t => t.Representantes)
-                .HasForeignKey(rt => rt.TurmaId)
+                .WithOne(t => t.Representante)
+                .HasForeignKey<RepresentanteTurma>(rt => rt.TurmaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RepresentanteTurma>()
@@ -87,7 +87,14 @@ namespace Mov.Infrastructure.Data
                 .HasForeignKey(d => d.CalendarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-          
+
+
+            // criar índice único (one-to-one)
+            modelBuilder.Entity<RepresentanteTurma>()
+                .HasIndex(rt => rt.TurmaId)
+                .IsUnique();
+
+
         }
     }
 }

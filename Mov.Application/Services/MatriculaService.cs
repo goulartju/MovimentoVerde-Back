@@ -134,7 +134,7 @@ public class MatriculaService : IMatriculaService
             NomeAluno = matricula.Aluno?.Nome ?? string.Empty,
             TurmaId = matricula.TurmaId,
             NomeTurma = matricula.Turma?.Nome ?? string.Empty,
-            AnoEscolar = matricula.Turma?.AnoEscolar ?? 0,
+            AnoEscolar = (int)matricula.Turma?.AnoEscolar,
             CalendarioId = matricula.CalendarioId,
             NomeCalendario = matricula.Calendario != null ? $"Calendário {matricula.Calendario.Ano}" : string.Empty,
             EscolaId = matricula.Turma?.EscolaId ?? Guid.Empty,

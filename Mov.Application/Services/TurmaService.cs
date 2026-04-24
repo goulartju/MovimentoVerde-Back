@@ -52,30 +52,28 @@ public class TurmaService : ITurmaService
         {
             EscolaId = dto.EscolaId,
             Nome = dto.Nome,
-            AnoEscolar = dto.AnoEscolar,
-            Turno = dto.Turno,
+            AnoEscolar = (Mov.Domain.Enums.AnoSerieEnum)Enum.Parse(typeof(Mov.Domain.Enums.AnoSerieEnum), dto.AnoEscolar, true),
+            Turno = (Mov.Domain.Enums.TurnoEnum)Enum.Parse(typeof(Mov.Domain.Enums.TurnoEnum), dto.Turno, true),
             CalendarioId = dto.CalendarioId,
             Ativo = dto.Ativo
         };
 
         var created = await _turmaRepository.CreateAsync(turma);
 
-        // Adicionar representantes se fornecidos
-        if (dto.Representantes != null && dto.Representantes.Any())
+        if(dto.RepresentanteId != Guid.Empty)
         {
-            foreach (var rep in dto.Representantes)
+            // Adicionar representante
+            var representanteTurma = new RepresentanteTurma
             {
-                var representanteTurma = new RepresentanteTurma
-                {
-                    TurmaId = created.Id,
-                    UsuarioId = rep.UsuarioId,
-     
-                };
-                await _representanteTurmaRepository.AddRepresentanteAsync(representanteTurma);
-            }
-            // Recarregar para incluir representantes
-            created = await _turmaRepository.GetByIdAsync(created.Id);
+                TurmaId = created.Id,
+                UsuarioId = dto.RepresentanteId
+            };
+            await _representanteTurmaRepository.AddRepresentanteAsync(representanteTurma);
+
         }
+
+        // Recarregar para incluir representante
+        created = await _turmaRepository.GetByIdAsync(created.Id);
 
         return MapToDto(created!);
     }
@@ -90,37 +88,33 @@ public class TurmaService : ITurmaService
 
         existing.EscolaId = dto.EscolaId;
         existing.Nome = dto.Nome;
-        existing.AnoEscolar = dto.AnoEscolar;
-        existing.Turno = dto.Turno;
+        existing.AnoEscolar = (Mov.Domain.Enums.AnoSerieEnum)Enum.Parse(typeof(Mov.Domain.Enums.AnoSerieEnum), dto.AnoEscolar, true);
+        existing.Turno = (Mov.Domain.Enums.TurnoEnum)Enum.Parse(typeof(Mov.Domain.Enums.TurnoEnum), dto.Turno, true);
         existing.CalendarioId = dto.CalendarioId;
         existing.Ativo = dto.Ativo;
 
         var updated = await _turmaRepository.UpdateAsync(existing);
 
-        // Processar representantes se fornecidos
-        if (dto.Representantes != null)
+        // Remover representante existente
+        var existingReps = await _representanteTurmaRepository.GetByTurmaIdAsync(dto.Id);
+        foreach (var rep in existingReps)
         {
-            // Remover representantes existentes
-            var existingReps = await _representanteTurmaRepository.GetByTurmaIdAsync(dto.Id);
-            foreach (var rep in existingReps)
-            {
-                await _representanteTurmaRepository.RemoveRepresentanteAsync(rep.Id);
-            }
-
-            // Adicionar novos representantes
-            foreach (var rep in dto.Representantes)
-            {
-                var representanteTurma = new RepresentanteTurma
-                {
-                    TurmaId = dto.Id,
-                    UsuarioId = rep.UsuarioId
-                };
-                await _representanteTurmaRepository.AddRepresentanteAsync(representanteTurma);
-            }
-
-            // Recarregar para incluir representantes atualizados
-            updated = await _turmaRepository.GetByIdAsync(dto.Id);
+            await _representanteTurmaRepository.RemoveRepresentanteAsync(rep.Id);
         }
+
+        if (dto.RepresentanteId != Guid.Empty)
+        {
+            // Adicionar novo representante
+            var representanteTurma = new RepresentanteTurma
+            {
+                TurmaId = dto.Id,
+                UsuarioId = dto.RepresentanteId
+            };
+            await _representanteTurmaRepository.AddRepresentanteAsync(representanteTurma);
+        }
+
+        // Recarregar para incluir representante atualizado
+        updated = await _turmaRepository.GetByIdAsync(dto.Id);
 
         return MapToDto(updated!);
     }
@@ -141,15 +135,11 @@ public class TurmaService : ITurmaService
             Id = turma.Id,
             EscolaId = turma.EscolaId,
             Nome = turma.Nome,
-            AnoEscolar = turma.AnoEscolar,
-            Turno = turma.Turno,
+            AnoEscolar = (int)turma.AnoEscolar,
+            Turno = turma.Turno.ToString(),
             CalendarioId = turma.CalendarioId,
             Ativo = turma.Ativo,
-            Representantes = turma.Representantes.Select(r => new RepresentanteDto
-            {
-                UsuarioId = r.UsuarioId,
-                NomeUsuario = r.Usuario?.Nome ?? string.Empty,
-            }).ToList()
+            RepresentanteId = turma.Representante?.UsuarioId ?? Guid.Empty
         };
     }
 }

@@ -112,7 +112,7 @@ public class DoacaoService : IDoacaoService
             NomeTurma = doacao.Matricula?.Turma?.Nome ?? string.Empty,
             NomeEscola = doacao.Escola?.Nome ?? string.Empty,
             NomeCalendario = $"{doacao.Calendario?.Ano} - {doacao.Calendario?.Ano}" ?? string.Empty,
-            AnoEscolar = doacao.Matricula?.Turma?.AnoEscolar ?? 0
+            AnoEscolar = (int)doacao.Matricula?.Turma?.AnoEscolar
         };
     }
 }

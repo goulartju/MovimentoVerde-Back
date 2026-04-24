@@ -9,11 +9,5 @@ public class TurmaDto
     public string Turno { get; set; } = string.Empty;
     public Guid CalendarioId { get; set; }
     public bool Ativo { get; set; }
-    public List<RepresentanteDto> Representantes { get; set; } = new();
-}
-
-public class RepresentanteDto
-{
-    public Guid UsuarioId { get; set; }
-    public string NomeUsuario { get; set; } = string.Empty;
+    public Guid? RepresentanteId { get; set; }
 }
