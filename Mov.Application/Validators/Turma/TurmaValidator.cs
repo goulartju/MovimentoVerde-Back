@@ -15,11 +15,14 @@ public class CreateTurmaValidator : AbstractValidator<CreateTurmaDto>
             .MaximumLength(100).WithMessage("Nome não pode ter mais de 100 caracteres");
 
         RuleFor(x => x.AnoEscolar)
-            .NotEmpty().WithMessage("Ano escolar é obrigatório");
+            .NotEmpty().WithMessage("Ano escolar é obrigatório")
+            .Must(name => Enum.TryParse(typeof(Mov.Domain.Enums.AnoSerieEnum), name, true, out _))
+            .WithMessage("Ano escolar inválido");
 
         RuleFor(x => x.Turno)
             .NotEmpty().WithMessage("Turno é obrigatório")
-            .MaximumLength(30).WithMessage("Turno não pode ter mais de 30 caracteres");
+            .Must(name => Enum.TryParse(typeof(Mov.Domain.Enums.TurnoEnum), name, true, out _))
+            .WithMessage("Turno inválido");
 
         RuleFor(x => x.CalendarioId)
             .NotEmpty().WithMessage("CalendarioId é obrigatório");
@@ -30,9 +33,7 @@ public class UpdateTurmaValidator : AbstractValidator<UpdateTurmaDto>
 {
     public UpdateTurmaValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id é obrigatório");
-
+     
         RuleFor(x => x.EscolaId)
             .NotEmpty().WithMessage("EscolaId é obrigatório");
 
@@ -41,11 +42,14 @@ public class UpdateTurmaValidator : AbstractValidator<UpdateTurmaDto>
             .MaximumLength(100).WithMessage("Nome não pode ter mais de 100 caracteres");
 
         RuleFor(x => x.AnoEscolar)
-            .NotEmpty().WithMessage("Ano escolar é obrigatório");
+            .NotEmpty().WithMessage("Ano escolar é obrigatório")
+            .Must(name => Enum.TryParse(typeof(Mov.Domain.Enums.AnoSerieEnum), name, true, out _))
+            .WithMessage("Ano escolar inválido");
 
         RuleFor(x => x.Turno)
             .NotEmpty().WithMessage("Turno é obrigatório")
-            .MaximumLength(30).WithMessage("Turno não pode ter mais de 30 caracteres");
+            .Must(name => Enum.TryParse(typeof(Mov.Domain.Enums.TurnoEnum), name, true, out _))
+            .WithMessage("Turno inválido");
 
         RuleFor(x => x.CalendarioId)
             .NotEmpty().WithMessage("CalendarioId é obrigatório");

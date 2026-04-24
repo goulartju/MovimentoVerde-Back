@@ -9,5 +9,5 @@ public class CreateTurmaDto
     public string Turno { get; set; } = string.Empty;
     public Guid CalendarioId { get; set; }
     public bool Ativo { get; set; } = true;
-    public Guid RepresentanteId { get; set; }
+    public Guid? RepresentanteId { get; set; }
 }

@@ -60,13 +60,13 @@ public class TurmaService : ITurmaService
 
         var created = await _turmaRepository.CreateAsync(turma);
 
-        if(dto.RepresentanteId != Guid.Empty)
+        if(dto.RepresentanteId != Guid.Empty && dto.RepresentanteId != null)
         {
             // Adicionar representante
             var representanteTurma = new RepresentanteTurma
             {
                 TurmaId = created.Id,
-                UsuarioId = dto.RepresentanteId
+                UsuarioId = dto.RepresentanteId.Value
             };
             await _representanteTurmaRepository.AddRepresentanteAsync(representanteTurma);
 
@@ -78,13 +78,13 @@ public class TurmaService : ITurmaService
         return MapToDto(created!);
     }
 
-    public async Task<TurmaDto> UpdateAsync(UpdateTurmaDto dto)
+    public async Task<TurmaDto> UpdateAsync(Guid id, UpdateTurmaDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
-        var existing = await _turmaRepository.GetByIdAsync(dto.Id);
+        var existing = await _turmaRepository.GetByIdAsync(id);
         if (existing == null)
-            throw new KeyNotFoundException($"Turma com ID {dto.Id} não encontrada");
+            throw new KeyNotFoundException($"Turma com ID {id} não encontrada");
 
         existing.EscolaId = dto.EscolaId;
         existing.Nome = dto.Nome;
@@ -96,25 +96,25 @@ public class TurmaService : ITurmaService
         var updated = await _turmaRepository.UpdateAsync(existing);
 
         // Remover representante existente
-        var existingReps = await _representanteTurmaRepository.GetByTurmaIdAsync(dto.Id);
+        var existingReps = await _representanteTurmaRepository.GetByTurmaIdAsync(id);
         foreach (var rep in existingReps)
         {
             await _representanteTurmaRepository.RemoveRepresentanteAsync(rep.Id);
         }
 
-        if (dto.RepresentanteId != Guid.Empty)
+        if (dto.RepresentanteId != Guid.Empty && dto.RepresentanteId != null)
         {
             // Adicionar novo representante
             var representanteTurma = new RepresentanteTurma
             {
-                TurmaId = dto.Id,
-                UsuarioId = dto.RepresentanteId
+                TurmaId = id,
+                UsuarioId = dto.RepresentanteId.Value
             };
             await _representanteTurmaRepository.AddRepresentanteAsync(representanteTurma);
         }
 
         // Recarregar para incluir representante atualizado
-        updated = await _turmaRepository.GetByIdAsync(dto.Id);
+        updated = await _turmaRepository.GetByIdAsync(id);
 
         return MapToDto(updated!);
     }
@@ -135,11 +135,12 @@ public class TurmaService : ITurmaService
             Id = turma.Id,
             EscolaId = turma.EscolaId,
             Nome = turma.Nome,
-            AnoEscolar = (int)turma.AnoEscolar,
+            AnoEscolar = turma.AnoEscolar.ToString(),
             Turno = turma.Turno.ToString(),
             CalendarioId = turma.CalendarioId,
             Ativo = turma.Ativo,
-            RepresentanteId = turma.Representante?.UsuarioId ?? Guid.Empty
+            RepresentanteId = turma.Representante?.UsuarioId,
+            RepresentanteNome = turma.Representante?.Usuario?.Nome
         };
     }
 }
