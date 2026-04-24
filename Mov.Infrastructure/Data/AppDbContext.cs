@@ -23,6 +23,15 @@ namespace Mov.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configurar tamanhos de coluna para Escola (MySQL não permite default em TEXT)
+            modelBuilder.Entity<Escola>(entity =>
+            {
+                entity.Property(e => e.Nome).HasMaxLength(200);
+                entity.Property(e => e.Municipio).HasMaxLength(200);
+                entity.Property(e => e.Contato).HasMaxLength(100);
+                entity.Property(e => e.Diretor).HasMaxLength(200);
+            });
+
             // Configurar relacionamento entre Turma e RepresentanteTurma
             modelBuilder.Entity<RepresentanteTurma>()
                 .HasOne(rt => rt.Turma)
@@ -78,24 +87,7 @@ namespace Mov.Infrastructure.Data
                 .HasForeignKey(d => d.CalendarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Seed do primeiro usuário admin
-            var adminId = Guid.NewGuid();
-            var senhaHashAdmin = BCrypt.Net.BCrypt.HashPassword("AdminSenha123");
-
-            modelBuilder.Entity<Usuario>().HasData(
-                new Usuario
-                {
-                    Id = adminId,
-                    Nome = "Administrador",
-                    Email = "admin@example.com",
-                    SenhaHash = senhaHashAdmin,
-                    DataNascimento = new DateTime(1990, 1, 1),
-                    Cargo = "Gerente do Sistema",
-                    Permissao = PermissaoEnum.Administrador,
-                    Ativo = true,
-                    CriadoEm = DateTime.UtcNow
-                }
-            );
+          
         }
     }
 }
