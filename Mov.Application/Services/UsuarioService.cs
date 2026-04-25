@@ -2,8 +2,10 @@ using FluentValidation;
 using Mov.Application.Validators.Usuario;
 using Mov.Domain.Dtos.Usuario;
 using Mov.Domain.Entities;
+using Mov.Domain.Enums;
 using Mov.Domain.Interfaces.Repositories;
 using Mov.Domain.Interfaces.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace Mov.Application.Services;
 
@@ -23,19 +25,19 @@ public class UsuarioService : IUsuarioService
         _updateValidator = updateValidator;
     }
 
-    public async Task<IEnumerable<Usuario>> GetAllAsync()
+    public async Task<IEnumerable<UsuarioDto>> GetAllAsync()
     {
         var usuarios = await _repository.GetAllAsync();
-        return usuarios;
+        return usuarios.Select(MapToDto);
     }
 
-    public async Task<Usuario?> GetByIdAsync(Guid id)
+    public async Task<UsuarioDto?> GetByIdAsync(Guid id)
     {
         var usuario = await _repository.GetByIdAsync(id);
-        return usuario; 
+        return MapToDto(usuario); 
     }
 
-    public async Task<Usuario> CreateAsync(CreateUsuarioDto dto)
+    public async Task<UsuarioDto> CreateAsync(CreateUsuarioDto dto)
     {
         await _createValidator.ValidateAndThrowAsync(dto);
 
@@ -50,14 +52,15 @@ public class UsuarioService : IUsuarioService
             Email = dto.Email,
             DataNascimento = dto.DataNascimento,
             Cargo = dto.Cargo,
-            Permissao = dto.Permissao
+            Permissao = dto.Permissao,
+            Ativo = dto.Ativo
         };
 
         var criado = await _repository.CreateAsync(usuario);
-        return criado;
+        return MapToDto(criado);
     }
 
-    public async Task<Usuario> UpdateAsync(UpdateUsuarioDto dto)
+    public async Task<UsuarioDto> UpdateAsync(UpdateUsuarioDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
@@ -81,7 +84,7 @@ public class UsuarioService : IUsuarioService
         usuario.Ativo = dto.Ativo;
 
         var atualizado = await _repository.UpdateAsync(usuario);
-        return atualizado;
+        return MapToDto(atualizado);
     }
 
     public async Task DeleteAsync(Guid id)
@@ -93,4 +96,17 @@ public class UsuarioService : IUsuarioService
         await _repository.DeleteAsync(id);
     }
 
+    public static UsuarioDto MapToDto(Usuario usuario)
+    {
+        return new UsuarioDto
+        {
+            Id = usuario.Id,
+            Nome = usuario.Nome,
+            DataNascimento = usuario.DataNascimento,
+            Email = usuario.Email,
+            Cargo = usuario.Cargo,
+            Permissao = usuario.Permissao.ToString(),
+            Ativo = usuario.Ativo
+        };
+    }
 }

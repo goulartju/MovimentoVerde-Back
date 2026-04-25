@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Mov.Domain.Dtos.Auth;
+using Mov.Domain.Dtos.Usuario;
 using Mov.Domain.Interfaces.Services;
 using Mov.Domain.Settings;
 using Mov.Domain.Interfaces.Repositories;
@@ -138,7 +139,7 @@ public class AuthService : IAuthService
             Nome = usuario.Nome,
             Email = usuario.Email,
             Cargo = usuario.Cargo,
-            Permissao = (int)usuario.Permissao,
+            Permissao = usuario.Permissao.ToString(),
             Ativo = usuario.Ativo
         };
     }
