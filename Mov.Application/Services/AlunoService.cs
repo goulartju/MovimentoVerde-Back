@@ -28,7 +28,7 @@ public class AlunoService : IAlunoService
         return alunos.Select(MapToDto);
     }
 
-    public async Task<AlunoDto?> GetByIdAsync(int id)
+    public async Task<AlunoDto?> GetByIdAsync(Guid id)
     {
         var aluno = await _repository.GetByIdAsync(id);
         return aluno == null ? null : MapToDto(aluno);
@@ -49,13 +49,13 @@ public class AlunoService : IAlunoService
         return MapToDto(created);
     }
 
-    public async Task<AlunoDto> UpdateAsync(UpdateAlunoDto dto)
+    public async Task<AlunoDto> UpdateAsync(Guid id, UpdateAlunoDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
-        var existing = await _repository.GetByIdAsync(dto.Id);
+        var existing = await _repository.GetByIdAsync(id);
         if (existing == null)
-            throw new KeyNotFoundException($"Aluno com ID {dto.Id} não encontrado");
+            throw new KeyNotFoundException($"Aluno com ID {id} não encontrado");
 
         existing.Nome = dto.Nome;
         existing.DataNascimento = dto.DataNascimento;
@@ -65,7 +65,7 @@ public class AlunoService : IAlunoService
         return MapToDto(updated);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var existing = await _repository.GetByIdAsync(id);
         if (existing == null)
@@ -81,9 +81,7 @@ public class AlunoService : IAlunoService
             Id = aluno.Id,
             Nome = aluno.Nome,
             DataNascimento = aluno.DataNascimento,
-            Ativo = aluno.Ativo,
-            CriadoEm = aluno.CriadoEm,
-            AtualizadoEm = aluno.AtualizadoEm
+            Ativo = aluno.Ativo
         };
     }
 }

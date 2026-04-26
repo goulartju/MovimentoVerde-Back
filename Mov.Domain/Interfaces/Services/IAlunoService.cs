@@ -5,8 +5,8 @@ namespace Mov.Domain.Interfaces.Services;
 public interface IAlunoService
 {
     Task<IEnumerable<AlunoDto>> GetAllAsync();
-    Task<AlunoDto?> GetByIdAsync(int id);
+    Task<AlunoDto?> GetByIdAsync(Guid id);
     Task<AlunoDto> CreateAsync(CreateAlunoDto dto);
-    Task<AlunoDto> UpdateAsync(UpdateAlunoDto dto);
-    Task DeleteAsync(int id);
+    Task<AlunoDto> UpdateAsync(Guid id, UpdateAlunoDto dto);
+    Task DeleteAsync(Guid id);
 }

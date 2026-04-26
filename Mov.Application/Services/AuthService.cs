@@ -139,7 +139,7 @@ public class AuthService : IAuthService
             Nome = usuario.Nome,
             Email = usuario.Email,
             Cargo = usuario.Cargo,
-            Permissao = usuario.Permissao.ToString(),
+            Permissao = (int)usuario.Permissao,
             Ativo = usuario.Ativo
         };
     }

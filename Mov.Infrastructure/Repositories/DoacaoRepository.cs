@@ -38,7 +38,7 @@ public class DoacaoRepository : IDoacaoRepository
             .FirstOrDefaultAsync(d => d.Id == id);
     }
 
-    public async Task<IEnumerable<Doacao>> GetByMatriculaIdAsync(int matriculaId)
+    public async Task<IEnumerable<Doacao>> GetByMatriculaIdAsync(Guid matriculaId)
     {
         return await _context.Doacoes
             .Where(d => d.MatriculaId == matriculaId)

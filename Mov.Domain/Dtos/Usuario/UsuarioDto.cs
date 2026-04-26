@@ -12,7 +12,7 @@ namespace Mov.Domain.Dtos.Usuario
         public DateTime DataNascimento { get; set; }
         public string Email { get; set; } = string.Empty;
         public string Cargo { get; set; } = string.Empty;
-        public string Permissao { get; set; } = string.Empty;
+        public int Permissao { get; set; } 
         public bool Ativo { get; set; }
     }
 }

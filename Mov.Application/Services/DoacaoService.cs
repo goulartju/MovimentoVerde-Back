@@ -34,7 +34,7 @@ public class DoacaoService : IDoacaoService
         return doacao == null ? null : MapToDto(doacao);
     }
 
-    public async Task<IEnumerable<DoacaoDto>> GetByMatriculaIdAsync(int matriculaId)
+    public async Task<IEnumerable<DoacaoDto>> GetByMatriculaIdAsync(Guid matriculaId)
     {
         var doacoes = await _repository.GetByMatriculaIdAsync(matriculaId);
         return doacoes.Select(MapToDto);

@@ -7,8 +7,6 @@ public class CreateMatriculaValidator : AbstractValidator<CreateMatriculaDto>
 {
     public CreateMatriculaValidator()
     {
-        RuleFor(x => x.AlunoId)
-            .GreaterThan(0).WithMessage("AlunoId deve ser maior que 0");
 
         RuleFor(x => x.TurmaId)
             .NotEmpty().WithMessage("TurmaId é obrigatório");
@@ -31,9 +29,6 @@ public class UpdateMatriculaValidator : AbstractValidator<UpdateMatriculaDto>
     {
         RuleFor(x => x.Id)
             .GreaterThan(0).WithMessage("Id deve ser maior que 0");
-
-        RuleFor(x => x.AlunoId)
-            .GreaterThan(0).WithMessage("AlunoId deve ser maior que 0");
 
         RuleFor(x => x.TurmaId)
             .NotEmpty().WithMessage("TurmaId é obrigatório");

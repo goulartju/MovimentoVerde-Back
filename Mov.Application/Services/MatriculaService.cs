@@ -40,7 +40,7 @@ public class MatriculaService : IMatriculaService
         return await Task.WhenAll(matriculas.Select(m => MapToDtoAsync(m)));
     }
 
-    public async Task<MatriculaDto?> GetByIdAsync(int id)
+    public async Task<MatriculaDto?> GetByIdAsync(Guid id)
     {
         var matricula = await _repository.GetByIdAsync(id);
         return matricula == null ? null : await MapToDtoAsync(matricula);
@@ -82,13 +82,13 @@ public class MatriculaService : IMatriculaService
         return await MapToDtoAsync(created);
     }
 
-    public async Task<MatriculaDto> UpdateAsync(UpdateMatriculaDto dto)
+    public async Task<MatriculaDto> UpdateAsync(Guid id, UpdateMatriculaDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
-        var existing = await _repository.GetByIdAsync(dto.Id);
+        var existing = await _repository.GetByIdAsync(id);
         if (existing == null)
-            throw new KeyNotFoundException($"Matrícula com ID {dto.Id} não encontrada");
+            throw new KeyNotFoundException($"Matrícula com ID {id} não encontrada");
 
         // Validar se aluno existe
         var aluno = await _alunoRepository.GetByIdAsync(dto.AlunoId);
@@ -114,7 +114,7 @@ public class MatriculaService : IMatriculaService
         return await MapToDtoAsync(updated);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var existing = await _repository.GetByIdAsync(id);
         if (existing == null)

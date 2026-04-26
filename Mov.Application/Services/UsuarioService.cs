@@ -41,7 +41,6 @@ public class UsuarioService : IUsuarioService
     {
         await _createValidator.ValidateAndThrowAsync(dto);
 
-        // Validar email único
         var existente = await _repository.GetByEmailAsync(dto.Email);
         if (existente != null)
             throw new InvalidOperationException($"Email {dto.Email} já cadastrado");
@@ -60,13 +59,13 @@ public class UsuarioService : IUsuarioService
         return MapToDto(criado);
     }
 
-    public async Task<UsuarioDto> UpdateAsync(UpdateUsuarioDto dto)
+    public async Task<UsuarioDto> UpdateAsync(Guid id,UpdateUsuarioDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
-        var usuario = await _repository.GetByIdAsync(dto.Id);
+        var usuario = await _repository.GetByIdAsync(id);
         if (usuario == null)
-            throw new KeyNotFoundException($"Usuário com ID {dto.Id} não encontrado");
+            throw new KeyNotFoundException($"Usuário com ID {id} não encontrado");
 
         // Validar email único (se mudou)
         if (usuario.Email != dto.Email)
@@ -105,7 +104,7 @@ public class UsuarioService : IUsuarioService
             DataNascimento = usuario.DataNascimento,
             Email = usuario.Email,
             Cargo = usuario.Cargo,
-            Permissao = usuario.Permissao.ToString(),
+            Permissao = (int)usuario.Permissao,
             Ativo = usuario.Ativo
         };
     }

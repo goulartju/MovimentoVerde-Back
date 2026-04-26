@@ -2,8 +2,8 @@ namespace Mov.Domain.Dtos.Matricula;
 
 public class MatriculaDto
 {
-    public int Id { get; set; }
-    public int AlunoId { get; set; }
+    public Guid Id { get; set; }
+    public Guid AlunoId { get; set; }
     public string NomeAluno { get; set; } = string.Empty;
     public Guid TurmaId { get; set; }
     public string NomeTurma { get; set; } = string.Empty;

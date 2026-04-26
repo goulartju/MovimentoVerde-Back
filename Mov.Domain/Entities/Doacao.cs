@@ -3,7 +3,7 @@ namespace Mov.Domain.Entities;
 public class Doacao
 {
     public int Id { get; set; }
-    public int MatriculaId { get; set; }
+    public Guid MatriculaId { get; set; }
     public Guid EscolaId { get; set; }
     public Guid CalendarioId { get; set; }
     public int QldLacre { get; set; }

@@ -22,7 +22,7 @@ public class UsuariosController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var items = await _service.GetAllAsync();
-        return Ok(new { sucesso = true, dados = items });
+        return Ok(items);
     }
 
     [HttpGet("{id:guid}")]
@@ -60,13 +60,10 @@ public class UsuariosController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUsuarioDto dto)
     {
-        if (id != dto.Id)
-            return BadRequest(new { sucesso = false, mensagem = "Id do usuário não confere" });
-
         try
         {
-            var result = await _service.UpdateAsync(dto);
-            return Ok(new { sucesso = true, dados = result });
+            var result = await _service.UpdateAsync(id, dto);
+            return Ok(result);
         }
         catch (KeyNotFoundException ex)
         {

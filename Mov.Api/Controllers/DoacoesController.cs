@@ -32,8 +32,8 @@ public class DoacoesController : ControllerBase
         return Ok(item);
     }
 
-    [HttpGet("matricula/{matriculaId:int}")]
-    public async Task<IActionResult> GetByMatriculaId(int matriculaId)
+    [HttpGet("matricula/{matriculaId:Guid}")]
+    public async Task<IActionResult> GetByMatriculaId(Guid matriculaId)
     {
         var items = await _service.GetByMatriculaIdAsync(matriculaId);
         return Ok(items);

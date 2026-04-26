@@ -24,8 +24,8 @@ public class AlunosController : ControllerBase
         return Ok(items);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    [HttpGet("{id:Guid}")]
+    public async Task<IActionResult> GetById(Guid id)
     {
         var item = await _service.GetByIdAsync(id);
         if (item == null) return NotFound();
@@ -46,14 +46,13 @@ public class AlunosController : ControllerBase
         }
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateAlunoDto dto)
+    [HttpPut("{id:Guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAlunoDto dto)
     {
-        if (id != dto.Id) return BadRequest("Id mismatch");
-
+ 
         try
         {
-            var result = await _service.UpdateAsync(dto);
+            var result = await _service.UpdateAsync(id, dto);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -66,8 +65,8 @@ public class AlunosController : ControllerBase
         }
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{id:Guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {

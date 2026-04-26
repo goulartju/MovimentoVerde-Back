@@ -3,7 +3,7 @@ namespace Mov.Domain.Dtos.Doacao;
 public class UpdateDoacaoDto
 {
     public int Id { get; set; }
-    public int MatriculaId { get; set; }
+    public Guid MatriculaId { get; set; }
     public Guid EscolaId { get; set; }
     public Guid CalendarioId { get; set; }
     public int QldLacre { get; set; }

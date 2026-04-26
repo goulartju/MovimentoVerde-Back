@@ -7,7 +7,7 @@ public class CreateDoacaoValidator : AbstractValidator<CreateDoacaoDto>
 {
     public CreateDoacaoValidator()
     {
-        RuleFor(d => d.MatriculaId).GreaterThan(0).WithMessage("MatriculaId deve ser maior que 0");
+        RuleFor(d => d.MatriculaId).NotEmpty().WithMessage("Matrícula é obrigatória");
         RuleFor(d => d.EscolaId).NotEmpty().WithMessage("EscolaId é obrigatório");
         RuleFor(d => d.CalendarioId).NotEmpty().WithMessage("CalendarioId é obrigatório");
         RuleFor(d => d.QldLacre).GreaterThanOrEqualTo(0).WithMessage("Quantidade de lacre não pode ser negativa");
@@ -21,7 +21,7 @@ public class UpdateDoacaoValidator : AbstractValidator<UpdateDoacaoDto>
     public UpdateDoacaoValidator()
     {
         RuleFor(d => d.Id).GreaterThan(0).WithMessage("Id deve ser maior que 0");
-        RuleFor(d => d.MatriculaId).GreaterThan(0).WithMessage("MatriculaId deve ser maior que 0");
+        RuleFor(d => d.MatriculaId).NotEmpty().WithMessage("MatriculaId é obrigatória");
         RuleFor(d => d.EscolaId).NotEmpty().WithMessage("EscolaId é obrigatório");
         RuleFor(d => d.CalendarioId).NotEmpty().WithMessage("CalendarioId é obrigatório");
         RuleFor(d => d.QldLacre).GreaterThanOrEqualTo(0).WithMessage("Quantidade de lacre não pode ser negativa");
