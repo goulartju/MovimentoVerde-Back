@@ -66,6 +66,13 @@ namespace Mov.Infrastructure.Data
                 .HasForeignKey(m => m.CalendarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Configurar relacionamento entre Matricula e Escola
+            modelBuilder.Entity<Matricula>()
+                .HasOne(m => m.Escola)
+                .WithMany(e => e.Matriculas)
+                .HasForeignKey(m => m.EscolaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Configurar relacionamento entre Doacao e Matricula
             modelBuilder.Entity<Doacao>()
                 .HasOne(d => d.Matricula)

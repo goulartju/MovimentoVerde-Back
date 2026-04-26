@@ -70,11 +70,18 @@ public class MatriculaService : IMatriculaService
         if (escola == null)
             throw new KeyNotFoundException($"Escola com ID {dto.EscolaId} não encontrada");
 
+        if (turma.EscolaId != dto.EscolaId)
+            throw new InvalidOperationException("A Turma informada não pertence à Escola informada");
+
+        if (calendario.EscolaId != dto.EscolaId)
+            throw new InvalidOperationException("O Calendário informado não pertence à Escola informada");
+
         var matricula = new Matricula
         {
             AlunoId = dto.AlunoId,
             TurmaId = dto.TurmaId,
             CalendarioId = dto.CalendarioId,
+            EscolaId = dto.EscolaId,
             Status = dto.Status
         };
 
@@ -105,9 +112,21 @@ public class MatriculaService : IMatriculaService
         if (calendario == null)
             throw new KeyNotFoundException($"Calendário com ID {dto.CalendarioId} não encontrado");
 
+        // Validar se escola existe
+        var escola = await _escolaRepository.GetByIdAsync(dto.EscolaId);
+        if (escola == null)
+            throw new KeyNotFoundException($"Escola com ID {dto.EscolaId} não encontrada");
+
+        if (turma.EscolaId != dto.EscolaId)
+            throw new InvalidOperationException("A Turma informada não pertence à Escola informada");
+
+        if (calendario.EscolaId != dto.EscolaId)
+            throw new InvalidOperationException("O Calendário informado não pertence à Escola informada");
+
         existing.AlunoId = dto.AlunoId;
         existing.TurmaId = dto.TurmaId;
         existing.CalendarioId = dto.CalendarioId;
+        existing.EscolaId = dto.EscolaId;
         existing.Status = dto.Status;
 
         var updated = await _repository.UpdateAsync(existing);
@@ -125,7 +144,7 @@ public class MatriculaService : IMatriculaService
 
     private async Task<MatriculaDto> MapToDtoAsync(Matricula matricula)
     {
-        var escola = await _escolaRepository.GetByIdAsync(matricula.Turma?.EscolaId ?? Guid.Empty);
+        var escola = await _escolaRepository.GetByIdAsync(matricula.EscolaId);
 
         return new MatriculaDto
         {
@@ -137,7 +156,7 @@ public class MatriculaService : IMatriculaService
             AnoEscolar = (int)matricula.Turma?.AnoEscolar,
             CalendarioId = matricula.CalendarioId,
             NomeCalendario = matricula.Calendario != null ? $"Calendário {matricula.Calendario.Ano}" : string.Empty,
-            EscolaId = matricula.Turma?.EscolaId ?? Guid.Empty,
+            EscolaId = matricula.EscolaId,
             NomeEscola = escola?.Nome ?? string.Empty,
             Status = matricula.Status,
             CriadoEm = matricula.CriadoEm,

@@ -40,6 +40,10 @@ public class MatriculasController : ControllerBase
             var result = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
         catch (FluentValidation.ValidationException ex)
         {
             return BadRequest(ex.Errors.Select(e => e.ErrorMessage));
@@ -58,6 +62,10 @@ public class MatriculasController : ControllerBase
         {
             var result = await _service.UpdateAsync(id, dto);
             return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
         }
         catch (KeyNotFoundException ex)
         {

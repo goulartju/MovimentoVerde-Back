@@ -18,5 +18,6 @@ namespace Mov.Domain.Entities
         public ICollection<Calendario> Calendarios { get; set; } = new List<Calendario>();
         public ICollection<Turma> Turmas { get; set; } = new List<Turma>();
         public ICollection<Doacao> Doacoes { get; set; } = new List<Doacao>();
+        public ICollection<Matricula> Matriculas { get; set; } = new List<Matricula>();
     }
 }
