@@ -24,8 +24,8 @@ public class DoacoesController : ControllerBase
         return Ok(items);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    [HttpGet("{id:Guid}")]
+    public async Task<IActionResult> GetById(Guid id)
     {
         var item = await _service.GetByIdAsync(id);
         if (item == null) return NotFound();
@@ -46,13 +46,13 @@ public class DoacoesController : ControllerBase
         return Ok(items);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateDoacaoDto dto)
+    [HttpPost("lote")]
+    public async Task<IActionResult> CreateLote([FromBody] CreateDoacaoLoteDto dto)
     {
         try
         {
-            var result = await _service.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            var result = await _service.CreateLoteAsync(dto);
+            return CreatedAtAction(nameof(GetById), result);
         }
         catch (FluentValidation.ValidationException ex)
         {
@@ -60,14 +60,13 @@ public class DoacoesController : ControllerBase
         }
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateDoacaoDto dto)
+    [HttpPut("lote")]
+    public async Task<IActionResult> UpdateLote([FromBody] UpdateDoacaoLoteDto dto)
     {
-        if (id != dto.Id) return BadRequest("Id mismatch");
 
         try
         {
-            var result = await _service.UpdateAsync(dto);
+            var result = await _service.UpdateLoteAsync(dto);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -80,8 +79,8 @@ public class DoacoesController : ControllerBase
         }
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{id:Guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {

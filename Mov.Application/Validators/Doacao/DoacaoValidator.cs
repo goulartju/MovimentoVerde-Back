@@ -3,29 +3,81 @@ using Mov.Domain.Dtos.Doacao;
 
 namespace Mov.Application.Validators.Doacao;
 
-public class CreateDoacaoValidator : AbstractValidator<CreateDoacaoDto>
+public class CreateDoacaoLoteValidator : AbstractValidator<CreateDoacaoLoteDto>
 {
-    public CreateDoacaoValidator()
+    public CreateDoacaoLoteValidator()
     {
-        RuleFor(d => d.MatriculaId).NotEmpty().WithMessage("Matrícula é obrigatória");
-        RuleFor(d => d.EscolaId).NotEmpty().WithMessage("EscolaId é obrigatório");
-        RuleFor(d => d.CalendarioId).NotEmpty().WithMessage("CalendarioId é obrigatório");
-        RuleFor(d => d.QldLacre).GreaterThanOrEqualTo(0).WithMessage("Quantidade de lacre não pode ser negativa");
-        RuleFor(d => d.QldTampinha).GreaterThanOrEqualTo(0).WithMessage("Quantidade de tampinha não pode ser negativa");
-        RuleFor(d => d.Data).NotEmpty().WithMessage("Data é obrigatória");
+        RuleFor(x => x.EscolaId)
+            .NotEmpty().WithMessage("Escola é obrigatória");
+
+        RuleFor(x => x.CalendarioId)
+            .NotEmpty().WithMessage("Calendário é obrigatório");
+
+        RuleFor(x => x.Data)
+            .NotEmpty().WithMessage("Data é obrigatória");
+
+        RuleFor(x => x.Doacoes)
+            .NotEmpty().WithMessage("Lista de doações não pode ser vazia");
+
+   
+        RuleForEach(x => x.Doacoes)
+            .SetValidator(new CreateDoacaoValidator());
     }
 }
 
-public class UpdateDoacaoValidator : AbstractValidator<UpdateDoacaoDto>
+public class CreateDoacaoValidator : AbstractValidator<CreateDoacaoItemDto>
 {
-    public UpdateDoacaoValidator()
+    public CreateDoacaoValidator()
     {
-        RuleFor(d => d.Id).GreaterThan(0).WithMessage("Id deve ser maior que 0");
-        RuleFor(d => d.MatriculaId).NotEmpty().WithMessage("MatriculaId é obrigatória");
-        RuleFor(d => d.EscolaId).NotEmpty().WithMessage("EscolaId é obrigatório");
-        RuleFor(d => d.CalendarioId).NotEmpty().WithMessage("CalendarioId é obrigatório");
-        RuleFor(d => d.QldLacre).GreaterThanOrEqualTo(0).WithMessage("Quantidade de lacre não pode ser negativa");
-        RuleFor(d => d.QldTampinha).GreaterThanOrEqualTo(0).WithMessage("Quantidade de tampinha não pode ser negativa");
-        RuleFor(d => d.Data).NotEmpty().WithMessage("Data é obrigatória");
+        RuleFor(d => d.MatriculaId)
+            .NotEmpty().WithMessage("Matrícula é obrigatória");
+
+        RuleFor(d => d.QtdLacre)
+            .GreaterThanOrEqualTo(0).WithMessage("Quantidade de lacre não pode ser negativa");
+
+        RuleFor(d => d.QtdTampinha)
+            .GreaterThanOrEqualTo(0).WithMessage("Quantidade de tampinha não pode ser negativa");
+
+    }
+}
+
+public class UpdateDoacaoLoteValidator : AbstractValidator<UpdateDoacaoLoteDto>
+{
+    public UpdateDoacaoLoteValidator()
+    {
+        RuleFor(d => d.Data)
+            .NotEmpty().WithMessage("Data é obrigatória");
+
+        RuleFor(d => d.EscolaId)
+            .NotEmpty().WithMessage("EscolaId é obrigatório");
+
+        RuleFor(d => d.CalendarioId)
+            .NotEmpty().WithMessage("CalendarioId é obrigatório");
+
+        RuleFor(x => x.Doacoes)
+           .NotEmpty().WithMessage("Lista de doações não pode ser vazia");
+
+        RuleForEach(x => x.Doacoes)
+           .SetValidator(new UpdateDoacaoItemValidator());
+    }
+}
+
+public class UpdateDoacaoItemValidator : AbstractValidator<UpdateDoacaoItemDto>
+{
+    public UpdateDoacaoItemValidator()
+    {
+
+        RuleFor(d => d.Id)
+           .NotEmpty().WithMessage("Id é obrigatório");
+
+        RuleFor(d => d.MatriculaId)
+            .NotEmpty().WithMessage("MatriculaId é obrigatória");
+
+        RuleFor(d => d.QtdLacre)
+            .GreaterThanOrEqualTo(0).WithMessage("Quantidade de lacre não pode ser negativa");
+
+        RuleFor(d => d.QtdTampinha)
+            .GreaterThanOrEqualTo(0).WithMessage("Quantidade de tampinha não pode ser negativa");
+
     }
 }

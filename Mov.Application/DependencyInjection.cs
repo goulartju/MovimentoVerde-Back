@@ -38,8 +38,8 @@ namespace Mov.Application
             services.AddScoped<IValidator<UpdateAlunoDto>, UpdateAlunoValidator>();
             services.AddScoped<IValidator<CreateMatriculaDto>, CreateMatriculaValidator>();
             services.AddScoped<IValidator<UpdateMatriculaDto>, UpdateMatriculaValidator>();
-            services.AddScoped<IValidator<CreateDoacaoDto>, CreateDoacaoValidator>();
-            services.AddScoped<IValidator<UpdateDoacaoDto>, UpdateDoacaoValidator>();
+            services.AddScoped<IValidator<CreateDoacaoLoteDto>, CreateDoacaoLoteValidator>();
+            services.AddScoped<IValidator<UpdateDoacaoLoteDto>, UpdateDoacaoLoteValidator>();
             services.AddScoped<IValidator<LoginDto>, LoginValidator>();
             services.AddScoped<IValidator<RegisterDto>, RegisterValidator>();
             services.AddScoped<IValidator<CreateUserDto>, CreateUserValidator>();

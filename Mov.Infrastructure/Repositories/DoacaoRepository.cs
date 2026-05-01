@@ -26,7 +26,7 @@ public class DoacaoRepository : IDoacaoRepository
             .ToListAsync();
     }
 
-    public async Task<Doacao?> GetByIdAsync(int id)
+    public async Task<Doacao?> GetByIdAsync(Guid id)
     {
         return await _context.Doacoes
             .Include(d => d.Matricula)
@@ -64,23 +64,22 @@ public class DoacaoRepository : IDoacaoRepository
             .ToListAsync();
     }
 
-    public async Task<Doacao> CreateAsync(Doacao doacao)
+    public async Task<IEnumerable<Doacao>> CreateLoteAsync(List<Doacao> doacoes)
     {
-        doacao.CriadoEm = DateTime.UtcNow;
-        _context.Doacoes.Add(doacao);
+        
+        await _context.Doacoes.AddRangeAsync(doacoes);
         await _context.SaveChangesAsync();
-        return doacao;
+        return doacoes;
     }
 
-    public async Task<Doacao> UpdateAsync(Doacao doacao)
+    public async Task<IEnumerable<Doacao>> UpdateLoteAsync(List<Doacao> doacoes)
     {
-        doacao.AtualizadoEm = DateTime.UtcNow;
-        _context.Doacoes.Update(doacao);
+        _context.Doacoes.UpdateRange(doacoes);
         await _context.SaveChangesAsync();
-        return doacao;
+        return doacoes;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var doacao = await _context.Doacoes.FindAsync(id);
         if (doacao != null)
