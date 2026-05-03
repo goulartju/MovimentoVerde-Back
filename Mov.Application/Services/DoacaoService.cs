@@ -9,17 +9,23 @@ namespace Mov.Application.Services;
 public class DoacaoService : IDoacaoService
 {
     private readonly IDoacaoRepository _repository;
+    private readonly IMatriculaRepository _matriculaRepository;
     private readonly IValidator<CreateDoacaoLoteDto> _createValidator;
     private readonly IValidator<UpdateDoacaoLoteDto> _updateValidator;
+    private readonly IValidator<DoacaoFilterDto> _filterValidator;
 
     public DoacaoService(
         IDoacaoRepository repository,
+        IMatriculaRepository matriculaRepository,
         IValidator<CreateDoacaoLoteDto> createValidator,
-        IValidator<UpdateDoacaoLoteDto> updateValidator)
+        IValidator<UpdateDoacaoLoteDto> updateValidator,
+        IValidator<DoacaoFilterDto> filterValidator)
     {
         _repository = repository;
+        _matriculaRepository = matriculaRepository;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _filterValidator = filterValidator;
     }
 
     public async Task<IEnumerable<DoacaoDto>> GetAllAsync()
@@ -43,6 +49,54 @@ public class DoacaoService : IDoacaoService
     public async Task<IEnumerable<DoacaoDto>> GetByEscolaIdAsync(Guid escolaId)
     {
         var doacoes = await _repository.GetByEscolaIdAsync(escolaId);
+        return doacoes.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<DoacaoDto>> GetByFilterAsync(DoacaoFilterDto filter)
+    {
+        await _filterValidator.ValidateAndThrowAsync(filter);
+
+        var calendarioId = filter.CalendarioId!.Value;
+        var data = filter.Data!.Value;
+        var escolaId = filter.EscolaId!.Value;
+        var turmaId = filter.TurmaId!.Value;
+
+        var doacoes = (await _repository.GetByFilterAsync(calendarioId, data, escolaId, turmaId)).ToList();
+
+        return doacoes.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<DoacaoDto>> CreateByFilterAsync(DoacaoFilterDto filter)
+    {
+        await _filterValidator.ValidateAndThrowAsync(filter);
+
+        var calendarioId = filter.CalendarioId!.Value;
+        var data = filter.Data!.Value;
+        var escolaId = filter.EscolaId!.Value;
+        var turmaId = filter.TurmaId!.Value;
+
+        var doacoesExistentes = (await _repository.GetByFilterAsync(calendarioId, data, escolaId, turmaId)).ToList();
+        var matriculas = (await _matriculaRepository.GetByTurmaIdAsync(turmaId)).ToList();
+        var matriculasComDoacao = doacoesExistentes.Select(d => d.MatriculaId).ToHashSet();
+
+        var novasDoacoes = matriculas
+            .Where(matricula => !matriculasComDoacao.Contains(matricula.Id))
+            .Select(matricula => new Doacao
+            {
+                MatriculaId = matricula.Id,
+                EscolaId = escolaId,
+                CalendarioId = calendarioId,
+                QtdLacre = 0,
+                QtdTampinha = 0,
+                Data = data.Date,
+                CriadoEm = DateTime.UtcNow
+            })
+            .ToList();
+
+        if (novasDoacoes.Any())
+            await _repository.CreateLoteAsync(novasDoacoes);
+
+        var doacoes = await _repository.GetByFilterAsync(calendarioId, data, escolaId, turmaId);
         return doacoes.Select(MapToDto);
     }
 

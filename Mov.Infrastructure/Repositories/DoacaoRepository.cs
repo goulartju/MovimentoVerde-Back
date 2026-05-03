@@ -64,6 +64,28 @@ public class DoacaoRepository : IDoacaoRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Doacao>> GetByFilterAsync(Guid calendarioId, DateTime data, Guid escolaId, Guid turmaId)
+    {
+        var startDate = data.Date;
+        var endDate = startDate.AddDays(1);
+
+        return await _context.Doacoes
+            .Where(d =>
+                d.CalendarioId == calendarioId &&
+                d.EscolaId == escolaId &&
+                d.Data >= startDate &&
+                d.Data < endDate &&
+                d.Matricula != null &&
+                d.Matricula.TurmaId == turmaId)
+            .Include(d => d.Matricula)
+                .ThenInclude(m => m!.Aluno)
+            .Include(d => d.Matricula)
+                .ThenInclude(m => m!.Turma)
+            .Include(d => d.Escola)
+            .Include(d => d.Calendario)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<Doacao>> CreateLoteAsync(List<Doacao> doacoes)
     {
         

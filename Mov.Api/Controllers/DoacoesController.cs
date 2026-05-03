@@ -46,6 +46,20 @@ public class DoacoesController : ControllerBase
         return Ok(items);
     }
 
+    [HttpGet("filter")]
+    public async Task<IActionResult> GetByFilter([FromQuery] DoacaoFilterDto filter)
+    {
+        try
+        {
+            var items = await _service.GetByFilterAsync(filter);
+            return Ok(items);
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(ex.Errors.Select(e => e.ErrorMessage));
+        }
+    }
+
     [HttpPost("lote")]
     public async Task<IActionResult> CreateLote([FromBody] CreateDoacaoLoteDto dto)
     {
@@ -53,6 +67,20 @@ public class DoacoesController : ControllerBase
         {
             var result = await _service.CreateLoteAsync(dto);
             return CreatedAtAction(nameof(GetById), result);
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(ex.Errors.Select(e => e.ErrorMessage));
+        }
+    }
+
+    [HttpPost("filter")]
+    public async Task<IActionResult> CreateByFilter([FromBody] DoacaoFilterDto filter)
+    {
+        try
+        {
+            var result = await _service.CreateByFilterAsync(filter);
+            return Ok(result);
         }
         catch (FluentValidation.ValidationException ex)
         {

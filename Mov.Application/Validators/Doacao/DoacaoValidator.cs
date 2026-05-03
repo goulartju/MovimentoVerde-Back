@@ -3,6 +3,24 @@ using Mov.Domain.Dtos.Doacao;
 
 namespace Mov.Application.Validators.Doacao;
 
+public class DoacaoFilterValidator : AbstractValidator<DoacaoFilterDto>
+{
+    public DoacaoFilterValidator()
+    {
+        RuleFor(x => x.CalendarioId)
+            .NotEmpty().WithMessage("CalendarioId é obrigatório");
+
+        RuleFor(x => x.Data)
+            .NotEmpty().WithMessage("Data é obrigatória");
+
+        RuleFor(x => x.EscolaId)
+            .NotEmpty().WithMessage("EscolaId é obrigatório");
+
+        RuleFor(x => x.TurmaId)
+            .NotEmpty().WithMessage("TurmaId é obrigatório");
+    }
+}
+
 public class CreateDoacaoLoteValidator : AbstractValidator<CreateDoacaoLoteDto>
 {
     public CreateDoacaoLoteValidator()

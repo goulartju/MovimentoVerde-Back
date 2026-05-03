@@ -33,6 +33,17 @@ public class MatriculaRepository : IMatriculaRepository
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 
+    public async Task<IEnumerable<Matricula>> GetByTurmaIdAsync(Guid turmaId)
+    {
+        return await _context.Matriculas
+            .Where(m => m.TurmaId == turmaId)
+            .Include(m => m.Aluno)
+            .Include(m => m.Turma)
+            .Include(m => m.Calendario)
+            .Include(m => m.Escola)
+            .ToListAsync();
+    }
+
     public async Task<Matricula> CreateAsync(Matricula matricula)
     {
         matricula.CriadoEm = DateTime.UtcNow;

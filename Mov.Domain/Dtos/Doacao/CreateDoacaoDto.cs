@@ -5,6 +5,7 @@ public class CreateDoacaoItemDto
     public Guid MatriculaId { get; set; }
     public int QtdLacre { get; set; }
     public int QtdTampinha { get; set; }
+
   
 }
 
