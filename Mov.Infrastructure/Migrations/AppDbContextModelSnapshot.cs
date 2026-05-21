@@ -21,9 +21,9 @@ namespace Mov.Infrastructure.Migrations
 
             modelBuilder.Entity("Mov.Domain.Entities.Aluno", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("tinyint(1)");
@@ -76,9 +76,9 @@ namespace Mov.Infrastructure.Migrations
 
             modelBuilder.Entity("Mov.Domain.Entities.Doacao", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("AtualizadoEm")
                         .HasColumnType("datetime(6)");
@@ -95,13 +95,13 @@ namespace Mov.Infrastructure.Migrations
                     b.Property<Guid>("EscolaId")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("MatriculaId")
+                    b.Property<Guid>("MatriculaId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("QtdLacre")
                         .HasColumnType("int");
 
-                    b.Property<int>("QldLacre")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QldTampinha")
+                    b.Property<int>("QtdTampinha")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -127,24 +127,28 @@ namespace Mov.Infrastructure.Migrations
                     b.Property<DateTime?>("AtualizadoEm")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Contato")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Diretor")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Endereco")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Municipio")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.HasKey("Id");
 
@@ -153,12 +157,12 @@ namespace Mov.Infrastructure.Migrations
 
             modelBuilder.Entity("Mov.Domain.Entities.Matricula", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("char(36)");
 
-                    b.Property<int>("AlunoId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AlunoId")
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("AtualizadoEm")
                         .HasColumnType("datetime(6)");
@@ -168,6 +172,9 @@ namespace Mov.Infrastructure.Migrations
 
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("EscolaId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -181,6 +188,8 @@ namespace Mov.Infrastructure.Migrations
                     b.HasIndex("AlunoId");
 
                     b.HasIndex("CalendarioId");
+
+                    b.HasIndex("EscolaId");
 
                     b.HasIndex("TurmaId");
 
@@ -228,7 +237,8 @@ namespace Mov.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TurmaId");
+                    b.HasIndex("TurmaId")
+                        .IsUnique();
 
                     b.HasIndex("UsuarioId");
 
@@ -263,9 +273,8 @@ namespace Mov.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Turno")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("Turno")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -370,6 +379,12 @@ namespace Mov.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Mov.Domain.Entities.Escola", "Escola")
+                        .WithMany("Matriculas")
+                        .HasForeignKey("EscolaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Mov.Domain.Entities.Turma", "Turma")
                         .WithMany("Matriculas")
                         .HasForeignKey("TurmaId")
@@ -380,14 +395,16 @@ namespace Mov.Infrastructure.Migrations
 
                     b.Navigation("Calendario");
 
+                    b.Navigation("Escola");
+
                     b.Navigation("Turma");
                 });
 
             modelBuilder.Entity("Mov.Domain.Entities.RepresentanteTurma", b =>
                 {
                     b.HasOne("Mov.Domain.Entities.Turma", "Turma")
-                        .WithMany("Representantes")
-                        .HasForeignKey("TurmaId")
+                        .WithOne("Representante")
+                        .HasForeignKey("Mov.Domain.Entities.RepresentanteTurma", "TurmaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -437,6 +454,8 @@ namespace Mov.Infrastructure.Migrations
 
                     b.Navigation("Doacoes");
 
+                    b.Navigation("Matriculas");
+
                     b.Navigation("Turmas");
                 });
 
@@ -449,7 +468,7 @@ namespace Mov.Infrastructure.Migrations
                 {
                     b.Navigation("Matriculas");
 
-                    b.Navigation("Representantes");
+                    b.Navigation("Representante");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,4 +9,5 @@ public class CreateUsuarioDto
     public string Email { get; set; } = string.Empty;
     public string Cargo { get; set; } = string.Empty;
     public PermissaoEnum Permissao { get; set; }
+    public bool Ativo { get; set; }
 }

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mov.Domain.Dtos.Turma;
 using Mov.Domain.Interfaces.Services;
 
 namespace Mov.Api.Controllers;
 
+//[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TurmasController : ControllerBase
@@ -54,11 +56,10 @@ public class TurmasController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTurmaDto dto)
     {
-        if (id != dto.Id) return BadRequest("Id mismatch");
-
+       
         try
         {
-            var result = await _service.UpdateAsync(dto);
+            var result = await _service.UpdateAsync(id, dto);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)

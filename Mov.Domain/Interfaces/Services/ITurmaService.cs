@@ -8,6 +8,6 @@ public interface ITurmaService
     Task<TurmaDto?> GetByIdAsync(Guid id);
     Task<IEnumerable<TurmaDto>> GetByEscolaIdAsync(Guid escolaId);
     Task<TurmaDto> CreateAsync(CreateTurmaDto dto);
-    Task<TurmaDto> UpdateAsync(UpdateTurmaDto dto);
+    Task<TurmaDto> UpdateAsync(Guid id, UpdateTurmaDto dto);
     Task DeleteAsync(Guid id);
 }

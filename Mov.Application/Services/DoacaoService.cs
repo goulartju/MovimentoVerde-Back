@@ -9,17 +9,23 @@ namespace Mov.Application.Services;
 public class DoacaoService : IDoacaoService
 {
     private readonly IDoacaoRepository _repository;
-    private readonly IValidator<CreateDoacaoDto> _createValidator;
-    private readonly IValidator<UpdateDoacaoDto> _updateValidator;
+    private readonly IMatriculaRepository _matriculaRepository;
+    private readonly IValidator<CreateDoacaoLoteDto> _createValidator;
+    private readonly IValidator<UpdateDoacaoLoteDto> _updateValidator;
+    private readonly IValidator<DoacaoFilterDto> _filterValidator;
 
     public DoacaoService(
         IDoacaoRepository repository,
-        IValidator<CreateDoacaoDto> createValidator,
-        IValidator<UpdateDoacaoDto> updateValidator)
+        IMatriculaRepository matriculaRepository,
+        IValidator<CreateDoacaoLoteDto> createValidator,
+        IValidator<UpdateDoacaoLoteDto> updateValidator,
+        IValidator<DoacaoFilterDto> filterValidator)
     {
         _repository = repository;
+        _matriculaRepository = matriculaRepository;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _filterValidator = filterValidator;
     }
 
     public async Task<IEnumerable<DoacaoDto>> GetAllAsync()
@@ -28,13 +34,13 @@ public class DoacaoService : IDoacaoService
         return doacoes.Select(MapToDto);
     }
 
-    public async Task<DoacaoDto?> GetByIdAsync(int id)
+    public async Task<DoacaoDto?> GetByIdAsync(Guid id)
     {
         var doacao = await _repository.GetByIdAsync(id);
         return doacao == null ? null : MapToDto(doacao);
     }
 
-    public async Task<IEnumerable<DoacaoDto>> GetByMatriculaIdAsync(int matriculaId)
+    public async Task<IEnumerable<DoacaoDto>> GetByMatriculaIdAsync(Guid matriculaId)
     {
         var doacoes = await _repository.GetByMatriculaIdAsync(matriculaId);
         return doacoes.Select(MapToDto);
@@ -46,49 +52,109 @@ public class DoacaoService : IDoacaoService
         return doacoes.Select(MapToDto);
     }
 
-    public async Task<DoacaoDto> CreateAsync(CreateDoacaoDto dto)
+    public async Task<IEnumerable<DoacaoDto>> GetByFilterAsync(DoacaoFilterDto filter)
+    {
+        await _filterValidator.ValidateAndThrowAsync(filter);
+
+        var calendarioId = filter.CalendarioId!.Value;
+        var data = filter.Data!.Value;
+        var escolaId = filter.EscolaId!.Value;
+        var turmaId = filter.TurmaId!.Value;
+
+        var doacoes = (await _repository.GetByFilterAsync(calendarioId, data, escolaId, turmaId)).ToList();
+
+        return doacoes.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<DoacaoDto>> CreateByFilterAsync(DoacaoFilterDto filter)
+    {
+        await _filterValidator.ValidateAndThrowAsync(filter);
+
+        var calendarioId = filter.CalendarioId!.Value;
+        var data = filter.Data!.Value;
+        var escolaId = filter.EscolaId!.Value;
+        var turmaId = filter.TurmaId!.Value;
+
+        var doacoesExistentes = (await _repository.GetByFilterAsync(calendarioId, data, escolaId, turmaId)).ToList();
+        var matriculas = (await _matriculaRepository.GetByTurmaIdAsync(turmaId)).ToList();
+        var matriculasComDoacao = doacoesExistentes.Select(d => d.MatriculaId).ToHashSet();
+
+        var novasDoacoes = matriculas
+            .Where(matricula => !matriculasComDoacao.Contains(matricula.Id))
+            .Select(matricula => new Doacao
+            {
+                MatriculaId = matricula.Id,
+                EscolaId = escolaId,
+                CalendarioId = calendarioId,
+                QtdLacre = 0,
+                QtdTampinha = 0,
+                Data = data.Date,
+                CriadoEm = DateTime.UtcNow
+            })
+            .ToList();
+
+        if (novasDoacoes.Any())
+            await _repository.CreateLoteAsync(novasDoacoes);
+
+        var doacoes = await _repository.GetByFilterAsync(calendarioId, data, escolaId, turmaId);
+        return doacoes.Select(MapToDto);
+    }
+
+    public async Task<IEnumerable<DoacaoDto>> CreateLoteAsync(CreateDoacaoLoteDto dto)
     {
         await _createValidator.ValidateAndThrowAsync(dto);
 
-        var doacao = new Doacao
-        {
-            MatriculaId = dto.MatriculaId,
-            EscolaId = dto.EscolaId,
-            CalendarioId = dto.CalendarioId,
-            QldLacre = dto.QldLacre,
-            QldTampinha = dto.QldTampinha,
-            Data = dto.Data
-        };
+        var doacoes = new List<Doacao>();
 
-        var created = await _repository.CreateAsync(doacao);
-        
-        // Recarregar com relacionamentos
-        var result = await _repository.GetByIdAsync(created.Id);
-        return MapToDto(result!);
+        foreach (var item in dto.Doacoes)
+        {
+            var doacao = new Doacao
+            {
+                MatriculaId = item.MatriculaId,
+                EscolaId = dto.EscolaId,
+                CalendarioId = dto.CalendarioId,
+                QtdLacre = item.QtdLacre,
+                QtdTampinha = item.QtdTampinha,
+                Data = dto.Data,
+                CriadoEm = DateTime.UtcNow
+            };
+            doacoes.Add(doacao);
+           
+        }
+        var createdList = await _repository.CreateLoteAsync(doacoes);
+
+        return createdList.Select(MapToDto).ToList();
     }
 
-    public async Task<DoacaoDto> UpdateAsync(UpdateDoacaoDto dto)
+    public async Task<IEnumerable<DoacaoDto>> UpdateLoteAsync(UpdateDoacaoLoteDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
+        var doacoes = new List<Doacao>();
 
-        var existing = await _repository.GetByIdAsync(dto.Id);
-        if (existing == null)
-            throw new KeyNotFoundException($"Doação com ID {dto.Id} não encontrada");
+        foreach (var item in dto.Doacoes)
+        {
+            var existing = await _repository.GetByIdAsync(item.Id);
 
-        existing.MatriculaId = dto.MatriculaId;
-        existing.EscolaId = dto.EscolaId;
-        existing.CalendarioId = dto.CalendarioId;
-        existing.QldLacre = dto.QldLacre;
-        existing.QldTampinha = dto.QldTampinha;
-        existing.Data = dto.Data;
+            if (existing == null)
+                throw new KeyNotFoundException($"Doação com ID {item.Id} não encontrada");
 
-        await _repository.UpdateAsync(existing);
+            existing.MatriculaId = item.MatriculaId;
+            existing.EscolaId = dto.EscolaId;
+            existing.CalendarioId = dto.CalendarioId;
+            existing.QtdLacre = item.QtdLacre;
+            existing.QtdTampinha = item.QtdTampinha;
+            existing.Data = dto.Data;
+            existing.AtualizadoEm = DateTime.UtcNow;
+            doacoes.Add(existing);
+        }
 
-        var result = await _repository.GetByIdAsync(existing.Id);
-        return MapToDto(result!);
+        await _repository.UpdateLoteAsync(doacoes);
+
+        var result = await _repository.GetByIdAsync(doacoes.Last().Id);
+        return doacoes.Select(MapToDto).ToList();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var existing = await _repository.GetByIdAsync(id);
         if (existing == null)
@@ -105,14 +171,14 @@ public class DoacaoService : IDoacaoService
             MatriculaId = doacao.MatriculaId,
             EscolaId = doacao.EscolaId,
             CalendarioId = doacao.CalendarioId,
-            QldLacre = doacao.QldLacre,
-            QldTampinha = doacao.QldTampinha,
+            QtdLacre = doacao.QtdLacre,
+            QtdTampinha = doacao.QtdTampinha,
             Data = doacao.Data,
             NomeAluno = doacao.Matricula?.Aluno?.Nome ?? string.Empty,
             NomeTurma = doacao.Matricula?.Turma?.Nome ?? string.Empty,
             NomeEscola = doacao.Escola?.Nome ?? string.Empty,
             NomeCalendario = $"{doacao.Calendario?.Ano} - {doacao.Calendario?.Ano}" ?? string.Empty,
-            AnoEscolar = doacao.Matricula?.Turma?.AnoEscolar ?? 0
+            AnoEscolar = (int)(doacao.Matricula?.Turma?.AnoEscolar ?? 0)
         };
     }
 }

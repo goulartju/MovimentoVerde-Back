@@ -20,16 +20,28 @@ public class MatriculaRepository : IMatriculaRepository
             .Include(m => m.Aluno)
             .Include(m => m.Turma)
             .Include(m => m.Calendario)
+            .Include(m => m.Escola)
             .ToListAsync();
     }
 
-    public async Task<Matricula?> GetByIdAsync(int id)
+    public async Task<Matricula?> GetByIdAsync(Guid id)
     {
         return await _context.Matriculas
             .Include(m => m.Aluno)
             .Include(m => m.Turma)
             .Include(m => m.Calendario)
             .FirstOrDefaultAsync(m => m.Id == id);
+    }
+
+    public async Task<IEnumerable<Matricula>> GetByTurmaIdAsync(Guid turmaId)
+    {
+        return await _context.Matriculas
+            .Where(m => m.TurmaId == turmaId)
+            .Include(m => m.Aluno)
+            .Include(m => m.Turma)
+            .Include(m => m.Calendario)
+            .Include(m => m.Escola)
+            .ToListAsync();
     }
 
     public async Task<Matricula> CreateAsync(Matricula matricula)
@@ -48,7 +60,7 @@ public class MatriculaRepository : IMatriculaRepository
         return matricula;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var matricula = await _context.Matriculas.FindAsync(id);
         if (matricula != null)

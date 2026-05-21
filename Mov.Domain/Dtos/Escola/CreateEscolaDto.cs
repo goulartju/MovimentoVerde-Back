@@ -8,7 +8,7 @@ namespace Mov.Domain.Dtos.Escola
     {
         public required string Nome { get; set; }
         public required string Municipio { get; set; }
-        public required string Endereco { get; set; }
+        public required string Contato { get; set; }
         public required string Diretor { get; set; }
         public Boolean Ativo { get; set; }
     }

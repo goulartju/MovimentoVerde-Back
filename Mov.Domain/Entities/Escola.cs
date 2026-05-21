@@ -8,7 +8,7 @@ namespace Mov.Domain.Entities
         public Guid Id { get; set; }
         public required string Nome { get; set; }
         public required string Municipio { get; set; }
-        public required string Endereco { get; set; }
+        public required string Contato { get; set; }
         public required string Diretor { get; set; }
         public bool Ativo { get; set; }
         public DateTime CriadoEm { get; set; }
@@ -18,5 +18,6 @@ namespace Mov.Domain.Entities
         public ICollection<Calendario> Calendarios { get; set; } = new List<Calendario>();
         public ICollection<Turma> Turmas { get; set; } = new List<Turma>();
         public ICollection<Doacao> Doacoes { get; set; } = new List<Doacao>();
+        public ICollection<Matricula> Matriculas { get; set; } = new List<Matricula>();
     }
 }

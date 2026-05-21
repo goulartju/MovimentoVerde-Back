@@ -7,9 +7,7 @@ public class UpdateUsuarioValidator : AbstractValidator<UpdateUsuarioDto>
 {
     public UpdateUsuarioValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id é obrigatório");
-
+      
         RuleFor(x => x.Nome)
             .NotEmpty().WithMessage("Nome é obrigatório")
             .MinimumLength(3).WithMessage("Nome deve ter pelo menos 3 caracteres")

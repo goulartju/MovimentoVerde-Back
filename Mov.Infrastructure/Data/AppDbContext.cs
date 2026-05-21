@@ -23,11 +23,20 @@ namespace Mov.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configurar relacionamento entre Turma e RepresentanteTurma
+            // Configurar tamanhos de coluna para Escola (MySQL não permite default em TEXT)
+            modelBuilder.Entity<Escola>(entity =>
+            {
+                entity.Property(e => e.Nome).HasMaxLength(200);
+                entity.Property(e => e.Municipio).HasMaxLength(200);
+                entity.Property(e => e.Contato).HasMaxLength(100);
+                entity.Property(e => e.Diretor).HasMaxLength(200);
+            });
+
+            // Configurar relacionamento entre Turma e RepresentanteTurma (um para um)
             modelBuilder.Entity<RepresentanteTurma>()
                 .HasOne(rt => rt.Turma)
-                .WithMany(t => t.Representantes)
-                .HasForeignKey(rt => rt.TurmaId)
+                .WithOne(t => t.Representante)
+                .HasForeignKey<RepresentanteTurma>(rt => rt.TurmaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RepresentanteTurma>()
@@ -57,6 +66,13 @@ namespace Mov.Infrastructure.Data
                 .HasForeignKey(m => m.CalendarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Configurar relacionamento entre Matricula e Escola
+            modelBuilder.Entity<Matricula>()
+                .HasOne(m => m.Escola)
+                .WithMany(e => e.Matriculas)
+                .HasForeignKey(m => m.EscolaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Configurar relacionamento entre Doacao e Matricula
             modelBuilder.Entity<Doacao>()
                 .HasOne(d => d.Matricula)
@@ -78,24 +94,14 @@ namespace Mov.Infrastructure.Data
                 .HasForeignKey(d => d.CalendarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Seed do primeiro usuário admin
-            var adminId = Guid.NewGuid();
-            var senhaHashAdmin = BCrypt.Net.BCrypt.HashPassword("AdminSenha123");
 
-            modelBuilder.Entity<Usuario>().HasData(
-                new Usuario
-                {
-                    Id = adminId,
-                    Nome = "Administrador",
-                    Email = "admin@example.com",
-                    SenhaHash = senhaHashAdmin,
-                    DataNascimento = new DateTime(1990, 1, 1),
-                    Cargo = "Gerente do Sistema",
-                    Permissao = PermissaoEnum.Administrador,
-                    Ativo = true,
-                    CriadoEm = DateTime.UtcNow
-                }
-            );
+
+            // criar índice único (one-to-one)
+            modelBuilder.Entity<RepresentanteTurma>()
+                .HasIndex(rt => rt.TurmaId)
+                .IsUnique();
+
+
         }
     }
 }

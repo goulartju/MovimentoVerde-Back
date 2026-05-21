@@ -53,8 +53,7 @@ public class UsuarioRepository : IUsuarioRepository
         var usuario = await _context.Usuarios.FindAsync(id);
         if (usuario != null)
         {
-            usuario.Ativo = false;
-            usuario.AtualizadoEm = DateTime.UtcNow;
+            _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
         }
     }

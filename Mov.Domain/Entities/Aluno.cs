@@ -2,7 +2,7 @@ namespace Mov.Domain.Entities;
 
 public class Aluno
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Nome { get; set; } = string.Empty;
     public DateTime DataNascimento { get; set; }
     public bool Ativo { get; set; } = true;

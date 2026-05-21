@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mov.Domain.Dtos.Matricula;
 using Mov.Domain.Interfaces.Services;
 
 namespace Mov.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class MatriculasController : ControllerBase
@@ -22,8 +24,8 @@ public class MatriculasController : ControllerBase
         return Ok(items);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    [HttpGet("{id:Guid}")]
+    public async Task<IActionResult> GetById(Guid id)
     {
         var item = await _service.GetByIdAsync(id);
         if (item == null) return NotFound();
@@ -38,6 +40,10 @@ public class MatriculasController : ControllerBase
             var result = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
         catch (FluentValidation.ValidationException ex)
         {
             return BadRequest(ex.Errors.Select(e => e.ErrorMessage));
@@ -48,15 +54,18 @@ public class MatriculasController : ControllerBase
         }
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateMatriculaDto dto)
+    [HttpPut("{id:Guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateMatriculaDto dto)
     {
-        if (id != dto.Id) return BadRequest("Id mismatch");
 
         try
         {
-            var result = await _service.UpdateAsync(dto);
+            var result = await _service.UpdateAsync(id, dto);
             return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
         }
         catch (KeyNotFoundException ex)
         {
@@ -68,8 +77,8 @@ public class MatriculasController : ControllerBase
         }
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{id:Guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {

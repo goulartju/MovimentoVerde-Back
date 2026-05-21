@@ -9,7 +9,7 @@ public class CreateAlunoValidator : AbstractValidator<CreateAlunoDto>
     {
         RuleFor(x => x.Nome)
             .NotEmpty().WithMessage("Nome é obrigatório")
-            .MaximumLength(10).WithMessage("Nome não pode exceder 10 caracteres");
+            .MaximumLength(100).WithMessage("Nome não pode exceder 10 caracteres");
 
         RuleFor(x => x.DataNascimento)
             .NotEmpty().WithMessage("Data de nascimento é obrigatória")
@@ -21,12 +21,10 @@ public class UpdateAlunoValidator : AbstractValidator<UpdateAlunoDto>
 {
     public UpdateAlunoValidator()
     {
-        RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("Id deve ser maior que 0");
-
+       
         RuleFor(x => x.Nome)
             .NotEmpty().WithMessage("Nome é obrigatório")
-            .MaximumLength(10).WithMessage("Nome não pode exceder 10 caracteres");
+            .MaximumLength(100).WithMessage("Nome não pode exceder 10 caracteres");
 
         RuleFor(x => x.DataNascimento)
             .NotEmpty().WithMessage("Data de nascimento é obrigatória")

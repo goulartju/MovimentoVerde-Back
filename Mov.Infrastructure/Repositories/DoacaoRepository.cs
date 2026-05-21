@@ -26,7 +26,7 @@ public class DoacaoRepository : IDoacaoRepository
             .ToListAsync();
     }
 
-    public async Task<Doacao?> GetByIdAsync(int id)
+    public async Task<Doacao?> GetByIdAsync(Guid id)
     {
         return await _context.Doacoes
             .Include(d => d.Matricula)
@@ -38,7 +38,7 @@ public class DoacaoRepository : IDoacaoRepository
             .FirstOrDefaultAsync(d => d.Id == id);
     }
 
-    public async Task<IEnumerable<Doacao>> GetByMatriculaIdAsync(int matriculaId)
+    public async Task<IEnumerable<Doacao>> GetByMatriculaIdAsync(Guid matriculaId)
     {
         return await _context.Doacoes
             .Where(d => d.MatriculaId == matriculaId)
@@ -64,23 +64,44 @@ public class DoacaoRepository : IDoacaoRepository
             .ToListAsync();
     }
 
-    public async Task<Doacao> CreateAsync(Doacao doacao)
+    public async Task<IEnumerable<Doacao>> GetByFilterAsync(Guid calendarioId, DateTime data, Guid escolaId, Guid turmaId)
     {
-        doacao.CriadoEm = DateTime.UtcNow;
-        _context.Doacoes.Add(doacao);
-        await _context.SaveChangesAsync();
-        return doacao;
+        var startDate = data.Date;
+        var endDate = startDate.AddDays(1);
+
+        return await _context.Doacoes
+            .Where(d =>
+                d.CalendarioId == calendarioId &&
+                d.EscolaId == escolaId &&
+                d.Data >= startDate &&
+                d.Data < endDate &&
+                d.Matricula != null &&
+                d.Matricula.TurmaId == turmaId)
+            .Include(d => d.Matricula)
+                .ThenInclude(m => m!.Aluno)
+            .Include(d => d.Matricula)
+                .ThenInclude(m => m!.Turma)
+            .Include(d => d.Escola)
+            .Include(d => d.Calendario)
+            .ToListAsync();
     }
 
-    public async Task<Doacao> UpdateAsync(Doacao doacao)
+    public async Task<IEnumerable<Doacao>> CreateLoteAsync(List<Doacao> doacoes)
     {
-        doacao.AtualizadoEm = DateTime.UtcNow;
-        _context.Doacoes.Update(doacao);
+        
+        await _context.Doacoes.AddRangeAsync(doacoes);
         await _context.SaveChangesAsync();
-        return doacao;
+        return doacoes;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task<IEnumerable<Doacao>> UpdateLoteAsync(List<Doacao> doacoes)
+    {
+        _context.Doacoes.UpdateRange(doacoes);
+        await _context.SaveChangesAsync();
+        return doacoes;
+    }
+
+    public async Task DeleteAsync(Guid id)
     {
         var doacao = await _context.Doacoes.FindAsync(id);
         if (doacao != null)

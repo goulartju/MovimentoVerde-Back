@@ -5,10 +5,11 @@ namespace Mov.Domain.Interfaces.Repositories;
 public interface IDoacaoRepository
 {
     Task<IEnumerable<Doacao>> GetAllAsync();
-    Task<Doacao?> GetByIdAsync(int id);
-    Task<IEnumerable<Doacao>> GetByMatriculaIdAsync(int matriculaId);
+    Task<Doacao?> GetByIdAsync(Guid id);
+    Task<IEnumerable<Doacao>> GetByMatriculaIdAsync(Guid matriculaId);
     Task<IEnumerable<Doacao>> GetByEscolaIdAsync(Guid escolaId);
-    Task<Doacao> CreateAsync(Doacao doacao);
-    Task<Doacao> UpdateAsync(Doacao doacao);
-    Task DeleteAsync(int id);
+    Task<IEnumerable<Doacao>> GetByFilterAsync(Guid calendarioId, DateTime data, Guid escolaId, Guid turmaId);
+    Task<IEnumerable<Doacao>> CreateLoteAsync(List<Doacao> doacao);
+    Task<IEnumerable<Doacao>> UpdateLoteAsync(List<Doacao> doacao);
+    Task DeleteAsync(Guid id);
 }

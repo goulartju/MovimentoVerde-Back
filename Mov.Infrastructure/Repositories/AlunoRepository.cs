@@ -19,7 +19,7 @@ public class AlunoRepository : IAlunoRepository
         return await _context.Alunos.Where(a => a.Ativo).ToListAsync();
     }
 
-    public async Task<Aluno?> GetByIdAsync(int id)
+    public async Task<Aluno?> GetByIdAsync(Guid id)
     {
         return await _context.Alunos.FirstOrDefaultAsync(a => a.Id == id && a.Ativo);
     }
@@ -40,7 +40,7 @@ public class AlunoRepository : IAlunoRepository
         return aluno;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var aluno = await _context.Alunos.FindAsync(id);
         if (aluno != null)

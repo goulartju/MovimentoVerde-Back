@@ -28,31 +28,32 @@ public class EscolaService : IEscolaService
         return items.ToList();
     }
 
-    public async Task<Escola?> GetByIdAsync(Guid id)
+    public async Task<EscolaResponse?> GetByIdAsync(Guid id)
     {
         var item = await _repository.GetByIdAsync(id);
+        if (item is null) return null;
 
-        return item;
+        return ToResponse(item);
     }
 
-    public async Task<Escola> CreateAsync(CreateEscolaDto dto)
+    public async Task<EscolaResponse> CreateAsync(CreateEscolaDto dto)
     {
         await _createValidator.ValidateAndThrowAsync(dto);
 
-        var Escola = new Escola
+        var escola = new Escola
         {
             Nome = dto.Nome,
             Municipio = dto.Municipio,
-            Endereco = dto.Endereco,
+            Contato = dto.Contato,
             Diretor = dto.Diretor,
             Ativo = dto.Ativo
         };
 
-        var created = await _repository.CreateAsync(Escola);
-        return created;
+        var created = await _repository.CreateAsync(escola);
+        return ToResponse(created);
     }
 
-    public async Task<Escola> UpdateAsync(UpdateEscolaDto dto)
+    public async Task<EscolaResponse> UpdateAsync(UpdateEscolaDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
@@ -62,12 +63,13 @@ public class EscolaService : IEscolaService
 
         existing.Nome = dto.Nome;
         existing.Municipio = dto.Municipio;
-        existing.Endereco = dto.Endereco;
+        existing.Contato = dto.Contato;
         existing.Diretor = dto.Diretor;
         existing.Ativo = dto.Ativo;
+        existing.AtualizadoEm = DateTime.UtcNow;
 
         var updated = await _repository.UpdateAsync(existing);
-        return updated;
+        return ToResponse(updated);
     }
 
     public async Task DeleteAsync(Guid id)
@@ -78,4 +80,16 @@ public class EscolaService : IEscolaService
 
         await _repository.DeleteAsync(id);
     }
+
+    private static EscolaResponse ToResponse(Escola escola) => new()
+    {
+        Id = escola.Id,
+        Nome = escola.Nome,
+        Municipio = escola.Municipio,
+        Contato = escola.Contato,
+        Diretor = escola.Diretor,
+        Ativo = escola.Ativo,
+        CriadoEm = escola.CriadoEm,
+        AtualizadoEm = escola.AtualizadoEm
+    };
 }

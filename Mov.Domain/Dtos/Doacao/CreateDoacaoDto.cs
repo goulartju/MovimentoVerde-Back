@@ -1,11 +1,21 @@
 namespace Mov.Domain.Dtos.Doacao;
 
-public class CreateDoacaoDto
+public class CreateDoacaoItemDto
 {
-    public int MatriculaId { get; set; }
+    public Guid MatriculaId { get; set; }
+    public int QtdLacre { get; set; }
+    public int QtdTampinha { get; set; }
+
+  
+}
+
+public class CreateDoacaoLoteDto
+{
+
     public Guid EscolaId { get; set; }
     public Guid CalendarioId { get; set; }
-    public int QldLacre { get; set; }
-    public int QldTampinha { get; set; }
     public DateTime Data { get; set; }
+
+    public List<CreateDoacaoItemDto> Doacoes { get; set; }
+
 }

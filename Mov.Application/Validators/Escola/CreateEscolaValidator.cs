@@ -19,7 +19,7 @@ public class CreateEscolaValidator : AbstractValidator<CreateEscolaDto>
         RuleFor(x => x.Municipio)
             .NotNull().WithMessage("Município é obrigatório");
 
-        RuleFor(x => x.Endereco)
-            .NotNull().WithMessage("Endereço é obrigatório");
+        RuleFor(x => x.Contato)
+            .NotNull().WithMessage("Contato é obrigatório");
     }
 }
