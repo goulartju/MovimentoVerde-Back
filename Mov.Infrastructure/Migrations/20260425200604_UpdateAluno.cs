@@ -12,7 +12,15 @@ namespace Mov.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
+            // drop foreign keys that reference the columns being altered so we can change the column types
+            migrationBuilder.DropForeignKey(
+                name: "FK_Matriculas_Alunos_AlunoId",
+                table: "Matriculas");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Doacoes_Matriculas_MatriculaId",
+                table: "Doacoes");
+
             migrationBuilder.AlterColumn<Guid>(
                 name: "Id",
                 table: "Alunos",
@@ -46,6 +54,7 @@ namespace Mov.Infrastructure.Migrations
                 oldType: "int");
 
       
+            // re-create foreign keys now that column types match
             migrationBuilder.AddForeignKey(
                 name: "FK_Matriculas_Alunos_AlunoId",
                 table: "Matriculas",
