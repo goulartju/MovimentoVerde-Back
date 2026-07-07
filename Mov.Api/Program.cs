@@ -2,6 +2,7 @@ using Mov.Api;
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Mov.Domain.Settings;
@@ -16,15 +17,38 @@ var jwtSettings = new JwtSettings();
 builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
 builder.Services.AddSingleton(jwtSettings);
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+    // The app runs behind Nginx in Docker, where the proxy IP can vary by network.
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 // Add CORS
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>()
+    ?? [];
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", policy => policy
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy
             .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowAnyOrigin());
-            
+            .AllowAnyHeader();
+
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin();
+        }
+        else
+        {
+            policy.WithOrigins(allowedOrigins);
+        }
+    });
 });
 
 builder.Services
@@ -80,11 +104,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// CORS must be before everything else
+app.UseForwardedHeaders();
+
+// CORS must be before auth/controllers
 app.UseCors("CorsPolicy");
 
-app.UseHttpsRedirection();
-
+// Disabled because the app is behind Nginx/SSL termination in Docker.
+// Leaving this enabled can cause 301 redirects instead of direct API responses.
 app.UseAuthentication();
 app.UseAuthorization();
 
