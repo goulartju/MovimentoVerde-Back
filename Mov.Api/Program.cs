@@ -15,6 +15,7 @@ builder.Configuration.AddUserSecrets(Assembly.GetExecutingAssembly(), optional: 
 // JWT Settings Configuration
 var jwtSettings = new JwtSettings();
 builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
+ValidateJwtSettings(jwtSettings);
 builder.Services.AddSingleton(jwtSettings);
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -116,3 +117,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.Run();
+
+static void ValidateJwtSettings(JwtSettings jwtSettings)
+{
+    if (string.IsNullOrWhiteSpace(jwtSettings.Secret))
+    {
+        throw new InvalidOperationException(
+            "JwtSettings:Secret nao configurado. Defina em User Secrets ou na variavel de ambiente JwtSettings__Secret.");
+    }
+
+    var secretLengthInBits = Encoding.ASCII.GetByteCount(jwtSettings.Secret) * 8;
+    if (secretLengthInBits < 256)
+    {
+        throw new InvalidOperationException(
+            "JwtSettings:Secret deve ter pelo menos 256 bits (32 caracteres ASCII) para assinar tokens com HS256.");
+    }
+}
