@@ -12,5 +12,5 @@ public class MatriculaDto
     public string NomeCalendario { get; set; } = string.Empty;
     public bool Ativo { get; set; }
     public DateTime CriadoEm { get; set; }
-    public DateTime AtualizadoEm { get; set; }
+    public DateTime? AtualizadoEm { get; set; }
 }
