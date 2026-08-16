@@ -10,9 +10,7 @@ public class MatriculaDto
     public int AnoEscolar { get; set; }
     public Guid CalendarioId { get; set; }
     public string NomeCalendario { get; set; } = string.Empty;
-    public Guid EscolaId { get; set; }
-    public string NomeEscola { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
+    public bool Ativo { get; set; }
     public DateTime CriadoEm { get; set; }
     public DateTime AtualizadoEm { get; set; }
 }

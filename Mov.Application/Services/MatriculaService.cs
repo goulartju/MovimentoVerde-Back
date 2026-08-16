@@ -12,7 +12,6 @@ public class MatriculaService : IMatriculaService
     private readonly IAlunoRepository _alunoRepository;
     private readonly ITurmaRepository _turmaRepository;
     private readonly ICalendarioRepository _calendarioRepository;
-    private readonly IEscolaRepository _escolaRepository;
     private readonly IValidator<CreateMatriculaDto> _createValidator;
     private readonly IValidator<UpdateMatriculaDto> _updateValidator;
 
@@ -21,7 +20,6 @@ public class MatriculaService : IMatriculaService
         IAlunoRepository alunoRepository,
         ITurmaRepository turmaRepository,
         ICalendarioRepository calendarioRepository,
-        IEscolaRepository escolaRepository,
         IValidator<CreateMatriculaDto> createValidator,
         IValidator<UpdateMatriculaDto> updateValidator)
     {
@@ -29,7 +27,6 @@ public class MatriculaService : IMatriculaService
         _alunoRepository = alunoRepository;
         _turmaRepository = turmaRepository;
         _calendarioRepository = calendarioRepository;
-        _escolaRepository = escolaRepository;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
     }
@@ -65,24 +62,12 @@ public class MatriculaService : IMatriculaService
         if (calendario == null)
             throw new KeyNotFoundException($"Calendário com ID {dto.CalendarioId} não encontrado");
 
-        // Validar se escola existe
-        var escola = await _escolaRepository.GetByIdAsync(dto.EscolaId);
-        if (escola == null)
-            throw new KeyNotFoundException($"Escola com ID {dto.EscolaId} não encontrada");
-
-        if (turma.EscolaId != dto.EscolaId)
-            throw new InvalidOperationException("A Turma informada não pertence à Escola informada");
-
-        if (calendario.EscolaId != dto.EscolaId)
-            throw new InvalidOperationException("O Calendário informado não pertence à Escola informada");
-
         var matricula = new Matricula
         {
             AlunoId = dto.AlunoId,
             TurmaId = dto.TurmaId,
             CalendarioId = dto.CalendarioId,
-            EscolaId = dto.EscolaId,
-            Status = dto.Status
+            Ativo = dto.Ativo
         };
 
         var created = await _repository.CreateAsync(matricula);
@@ -112,22 +97,10 @@ public class MatriculaService : IMatriculaService
         if (calendario == null)
             throw new KeyNotFoundException($"Calendário com ID {dto.CalendarioId} não encontrado");
 
-        // Validar se escola existe
-        var escola = await _escolaRepository.GetByIdAsync(dto.EscolaId);
-        if (escola == null)
-            throw new KeyNotFoundException($"Escola com ID {dto.EscolaId} não encontrada");
-
-        if (turma.EscolaId != dto.EscolaId)
-            throw new InvalidOperationException("A Turma informada não pertence à Escola informada");
-
-        if (calendario.EscolaId != dto.EscolaId)
-            throw new InvalidOperationException("O Calendário informado não pertence à Escola informada");
-
         existing.AlunoId = dto.AlunoId;
         existing.TurmaId = dto.TurmaId;
         existing.CalendarioId = dto.CalendarioId;
-        existing.EscolaId = dto.EscolaId;
-        existing.Status = dto.Status;
+        existing.Ativo = dto.Ativo;
 
         var updated = await _repository.UpdateAsync(existing);
         return await MapToDtoAsync(updated);
@@ -144,8 +117,6 @@ public class MatriculaService : IMatriculaService
 
     private async Task<MatriculaDto> MapToDtoAsync(Matricula matricula)
     {
-        var escola = await _escolaRepository.GetByIdAsync(matricula.EscolaId);
-
         return new MatriculaDto
         {
             Id = matricula.Id,
@@ -156,9 +127,7 @@ public class MatriculaService : IMatriculaService
             AnoEscolar = (int)matricula.Turma?.AnoEscolar,
             CalendarioId = matricula.CalendarioId,
             NomeCalendario = matricula.Calendario != null ? $"Calendário {matricula.Calendario.Ano}" : string.Empty,
-            EscolaId = matricula.EscolaId,
-            NomeEscola = escola?.Nome ?? string.Empty,
-            Status = matricula.Status,
+            Ativo = matricula.Ativo,
             CriadoEm = matricula.CriadoEm,
             AtualizadoEm = matricula.AtualizadoEm
         };

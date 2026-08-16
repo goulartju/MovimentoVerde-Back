@@ -20,7 +20,6 @@ public class MatriculaRepository : IMatriculaRepository
             .Include(m => m.Aluno)
             .Include(m => m.Turma)
             .Include(m => m.Calendario)
-            .Include(m => m.Escola)
             .ToListAsync();
     }
 
@@ -40,7 +39,6 @@ public class MatriculaRepository : IMatriculaRepository
             .Include(m => m.Aluno)
             .Include(m => m.Turma)
             .Include(m => m.Calendario)
-            .Include(m => m.Escola)
             .ToListAsync();
     }
 
