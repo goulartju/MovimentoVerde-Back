@@ -11,7 +11,7 @@ namespace Mov.Domain.Interfaces.Services
         Task<IEnumerable<Escola>> GetAllAsync();
         Task<EscolaResponse?> GetByIdAsync(Guid id);
         Task<EscolaResponse> CreateAsync(CreateEscolaDto dto);
-        Task<EscolaResponse> UpdateAsync(UpdateEscolaDto dto);
+        Task<EscolaResponse> UpdateAsync(Guid id, UpdateEscolaDto dto);
         Task DeleteAsync(Guid id);
     }
 }

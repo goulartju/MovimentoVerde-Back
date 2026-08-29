@@ -53,13 +53,13 @@ public class EscolaService : IEscolaService
         return ToResponse(created);
     }
 
-    public async Task<EscolaResponse> UpdateAsync(UpdateEscolaDto dto)
+    public async Task<EscolaResponse> UpdateAsync(Guid id, UpdateEscolaDto dto)
     {
         await _updateValidator.ValidateAndThrowAsync(dto);
 
-        var existing = await _repository.GetByIdAsync(dto.Id);
+        var existing = await _repository.GetByIdAsync(id);
         if (existing == null)
-            throw new KeyNotFoundException($"Escola com ID {dto.Id} não encontrado");
+            throw new KeyNotFoundException($"Escola com ID {id} não encontrado");
 
         existing.Nome = dto.Nome;
         existing.Municipio = dto.Municipio;

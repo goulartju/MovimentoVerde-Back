@@ -10,9 +10,7 @@ public class UpdateEscolaValidator : AbstractValidator<UpdateEscolaDto>
 {
     public UpdateEscolaValidator()
     {
-        RuleFor(x => x.Id)
-           .NotEmpty().WithMessage("Id é obrigatório");
-
+  
         RuleFor(x => x.Nome)
             .NotEmpty().WithMessage("Nome é obrigatório");
 

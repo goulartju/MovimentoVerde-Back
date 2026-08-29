@@ -6,7 +6,6 @@ namespace Mov.Domain.Dtos.Escola
 {
     public class UpdateEscolaDto
     {
-        public Guid Id { get; set; }
         public required string Nome { get; set; }
         public required string Municipio { get; set; }
         public required string Contato { get; set; }
