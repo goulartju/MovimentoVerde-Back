@@ -54,6 +54,7 @@ namespace Mov.Application
             services.AddScoped<IAlunoService, AlunoService>();
             services.AddScoped<IMatriculaService, MatriculaService>();
             services.AddScoped<IDoacaoService, DoacaoService>();
+            services.AddScoped<IRankingService, RankingService>();
             services.AddScoped<IAuthService, AuthService>();
 
             return services;
