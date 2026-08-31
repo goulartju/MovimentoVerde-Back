@@ -11,8 +11,6 @@ public class CreateAlunoValidator : AbstractValidator<CreateAlunoDto>
             .NotEmpty().WithMessage("Nome é obrigatório")
             .MaximumLength(100).WithMessage("Nome não pode exceder 10 caracteres");
 
-        RuleFor(x => x.DataNascimento)
-            .LessThan(DateTime.Now).WithMessage("Data de nascimento deve ser no passado");
     }
 }
 
@@ -24,7 +22,5 @@ public class UpdateAlunoValidator : AbstractValidator<UpdateAlunoDto>
             .NotEmpty().WithMessage("Nome é obrigatório")
             .MaximumLength(100).WithMessage("Nome não pode exceder 10 caracteres");
 
-        RuleFor(x => x.DataNascimento)
-            .LessThan(DateTime.Now).WithMessage("Data de nascimento deve ser no passado");
     }
 }

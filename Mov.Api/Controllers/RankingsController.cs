@@ -4,7 +4,7 @@ using Mov.Domain.Interfaces.Services;
 
 namespace Mov.Api.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class RankingsController : ControllerBase

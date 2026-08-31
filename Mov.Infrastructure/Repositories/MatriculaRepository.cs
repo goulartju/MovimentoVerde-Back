@@ -42,6 +42,35 @@ public class MatriculaRepository : IMatriculaRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Matricula>> GetByAlunoIdAsync(Guid alunoId)
+    {
+        return await _context.Matriculas
+            .Where(m => m.AlunoId == alunoId)
+            .Include(m => m.Aluno)
+            .Include(m => m.Turma)
+            .Include(m => m.Calendario)
+            .ToListAsync();
+    }
+
+    public async Task<Matricula?> GetByAlunoIdAndTurmaIdAsync(Guid alunoId, Guid turmaId)
+    {
+        return await _context.Matriculas
+            .Include(m => m.Aluno)
+            .Include(m => m.Turma)
+            .Include(m => m.Calendario)
+            .FirstOrDefaultAsync(m => m.AlunoId == alunoId && m.TurmaId == turmaId);
+    }
+
+    public async Task<Matricula?> GetByAlunoIdAndCalendarioIdAsync(Guid alunoId, Guid calendarioId)
+    {
+        return await _context.Matriculas
+            .Where(m => m.AlunoId == alunoId && m.CalendarioId == calendarioId)
+            .Include(m => m.Aluno)
+            .Include(m => m.Turma)
+            .Include(m => m.Calendario)
+            .FirstOrDefaultAsync(m => m.AlunoId == alunoId && m.CalendarioId == calendarioId);
+    }
+
     public async Task<Matricula> CreateAsync(Matricula matricula)
     {
         matricula.CriadoEm = DateTime.UtcNow;
