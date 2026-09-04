@@ -61,7 +61,16 @@ public class AuthService : IAuthService
             AccessToken = accessToken,
             RefreshToken = refreshToken,
             ExpiresIn = _jwtSettings.AccessTokenExpirationMinutes * 60,
-            TokenType = "Bearer"
+            TokenType = "Bearer",
+            Usuario = new UsuarioDto
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Cargo = usuario.Cargo,
+                Permissao = (int)usuario.Permissao,
+                Ativo = usuario.Ativo
+            }
         };
     }
 
@@ -81,7 +90,6 @@ public class AuthService : IAuthService
             Nome = registerDto.Nome,
             Email = registerDto.Email,
             SenhaHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Senha),
-            DataNascimento = registerDto.DataNascimento,
             Cargo = registerDto.Cargo,
             Permissao = PermissaoEnum.Visualizador,
             Ativo = true,
@@ -98,7 +106,16 @@ public class AuthService : IAuthService
             AccessToken = accessToken,
             RefreshToken = refreshToken,
             ExpiresIn = _jwtSettings.AccessTokenExpirationMinutes * 60,
-            TokenType = "Bearer"
+            TokenType = "Bearer",
+            Usuario = new UsuarioDto
+            {
+                Id = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Cargo = usuario.Cargo,
+                Permissao = (int)usuario.Permissao,
+                Ativo = usuario.Ativo
+            }
         };
     }
 
@@ -124,7 +141,6 @@ public class AuthService : IAuthService
             Nome = createUserDto.Nome,
             Email = createUserDto.Email,
             SenhaHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Senha),
-            DataNascimento = createUserDto.DataNascimento,
             Cargo = createUserDto.Cargo,
             Permissao = createUserDto.Permissao,
             Ativo = true,

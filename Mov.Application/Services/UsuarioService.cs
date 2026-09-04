@@ -49,7 +49,6 @@ public class UsuarioService : IUsuarioService
         {
             Nome = dto.Nome,
             Email = dto.Email,
-            DataNascimento = dto.DataNascimento,
             Cargo = dto.Cargo,
             Permissao = dto.Permissao,
             Ativo = dto.Ativo
@@ -77,7 +76,6 @@ public class UsuarioService : IUsuarioService
 
         usuario.Nome = dto.Nome;
         usuario.Email = dto.Email;
-        usuario.DataNascimento = dto.DataNascimento;
         usuario.Cargo = dto.Cargo;
         usuario.Permissao = dto.Permissao;
         usuario.Ativo = dto.Ativo;
@@ -101,7 +99,6 @@ public class UsuarioService : IUsuarioService
         {
             Id = usuario.Id,
             Nome = usuario.Nome,
-            DataNascimento = usuario.DataNascimento,
             Email = usuario.Email,
             Cargo = usuario.Cargo,
             Permissao = (int)usuario.Permissao,

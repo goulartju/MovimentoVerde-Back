@@ -16,10 +16,6 @@ public class CreateUsuarioValidator : AbstractValidator<CreateUsuarioDto>
             .NotEmpty().WithMessage("Email é obrigatório")
             .EmailAddress().WithMessage("Email inválido");
 
-        RuleFor(x => x.DataNascimento)
-            .NotEmpty().WithMessage("Data de nascimento é obrigatória")
-            .LessThan(DateTime.Now).WithMessage("Data de nascimento não pode ser no futuro");
-
         RuleFor(x => x.Cargo)
             .NotEmpty().WithMessage("Cargo é obrigatório")
             .MaximumLength(50).WithMessage("Cargo não pode ter mais de 50 caracteres");

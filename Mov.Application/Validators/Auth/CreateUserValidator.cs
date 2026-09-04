@@ -22,10 +22,6 @@ public class CreateUserValidator : AbstractValidator<CreateUserDto>
             .Matches(@"[a-z]").WithMessage("Senha deve conter pelo menos uma letra minúscula")
             .Matches(@"[0-9]").WithMessage("Senha deve conter pelo menos um número");
 
-        RuleFor(x => x.DataNascimento)
-            .NotEmpty().WithMessage("Data de nascimento é obrigatória")
-            .LessThan(DateTime.Today).WithMessage("Data de nascimento inválida");
-
         RuleFor(x => x.Cargo)
             .NotEmpty().WithMessage("Cargo é obrigatório");
 

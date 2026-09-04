@@ -21,10 +21,6 @@ public class RegisterValidator : AbstractValidator<RegisterDto>
             .Matches(@"[A-Z]").WithMessage("Senha deve conter pelo menos uma letra maiúscula")
             .Matches(@"[0-9]").WithMessage("Senha deve conter pelo menos um número");
 
-        RuleFor(x => x.DataNascimento)
-            .NotEmpty().WithMessage("Data de nascimento é obrigatória")
-            .LessThan(DateTime.Today).WithMessage("Data de nascimento deve ser válida");
-
         RuleFor(x => x.Cargo)
             .NotEmpty().WithMessage("Cargo é obrigatório")
             .MaximumLength(50).WithMessage("Cargo não pode ter mais que 50 caracteres");

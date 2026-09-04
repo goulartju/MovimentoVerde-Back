@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Mov.Domain.Settings;
+using Mov.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 // Load user secrets (optional) so connection strings and other secrets stored
@@ -17,6 +18,14 @@ var jwtSettings = new JwtSettings();
 builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
 ValidateJwtSettings(jwtSettings);
 builder.Services.AddSingleton(jwtSettings);
+
+// Google OAuth Settings Configuration
+var googleOAuthSettings = new GoogleOAuthSettings();
+builder.Configuration.GetSection("GoogleOAuth").Bind(googleOAuthSettings);
+ValidateGoogleOAuthSettings(googleOAuthSettings);
+builder.Services.AddSingleton(googleOAuthSettings);
+builder.Services.AddScoped<GoogleOAuthService>();
+builder.Services.AddHttpClient<GoogleOAuthService>();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
@@ -131,5 +140,20 @@ static void ValidateJwtSettings(JwtSettings jwtSettings)
     {
         throw new InvalidOperationException(
             "JwtSettings:Secret deve ter pelo menos 256 bits (32 caracteres ASCII) para assinar tokens com HS256.");
+    }
+}
+
+static void ValidateGoogleOAuthSettings(GoogleOAuthSettings googleOAuthSettings)
+{
+    if (string.IsNullOrWhiteSpace(googleOAuthSettings.ClientId))
+    {
+        throw new InvalidOperationException(
+            "GoogleOAuth:ClientId nao configurado. Defina em User Secrets ou na variavel de ambiente GoogleOAuth__ClientId.");
+    }
+
+    if (string.IsNullOrWhiteSpace(googleOAuthSettings.ClientSecret))
+    {
+        throw new InvalidOperationException(
+            "GoogleOAuth:ClientSecret nao configurado. Defina em User Secrets ou na variavel de ambiente GoogleOAuth__ClientSecret.");
     }
 }
