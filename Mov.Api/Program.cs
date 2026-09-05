@@ -48,7 +48,8 @@ builder.Services.AddCors(options =>
     {
         policy
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
 
         if (builder.Environment.IsDevelopment())
         {
@@ -56,7 +57,7 @@ builder.Services.AddCors(options =>
         }
         else
         {
-            policy.WithOrigins(allowedOrigins);
+            policy.WithOrigins(allowedOrigins).AllowCredentials();
         }
     });
 });

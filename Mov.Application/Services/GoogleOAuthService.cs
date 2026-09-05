@@ -59,11 +59,16 @@ public class GoogleOAuthService
                 throw new InvalidOperationException("Token inválido: email ou sub claim ausente");
             }
 
-            // 3. Buscar ou criar usuário
+            // 3. Buscar usuário pré-cadastrado (sem auto-criação por padrão)
             var usuario = await _usuarioRepository.GetByEmailAsync(email);
 
             if (usuario == null)
             {
+                if (!_googleSettings.AllowNewUsersViaGoogle)
+                {
+                    throw new UnauthorizedAccessException("Usuário não autorizado. Solicite acesso ao administrador.");
+                }
+
                 // Criar novo usuário com dados do Google
                 usuario = new Usuario
                 {
@@ -116,6 +121,18 @@ public class GoogleOAuthService
         catch (SecurityTokenException ex)
         {
             throw new GoogleTokenValidationException($"Token Google inválido: {ex.Message}", ex);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            throw;
+        }
+        catch (GoogleTokenValidationException)
+        {
+            throw;
+        }
+        catch (GoogleAuthenticationException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

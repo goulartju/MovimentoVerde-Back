@@ -8,4 +8,9 @@ public class GoogleOAuthSettings
     public string TokenEndpoint { get; set; } = "https://oauth2.googleapis.com/token";
     public string CertificatesUrl { get; set; } = "https://www.googleapis.com/oauth2/v3/certs";
     public int CertificateCacheDurationMinutes { get; set; } = 60;
+    /// <summary>
+    /// Se false, só entra com Google quem já tem conta criada (admin pré-cadastra).
+    /// Se true, cria automaticamente como Visualizador.
+    /// </summary>
+    public bool AllowNewUsersViaGoogle { get; set; } = false;
 }

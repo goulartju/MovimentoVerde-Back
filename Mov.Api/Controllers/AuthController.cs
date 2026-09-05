@@ -56,6 +56,10 @@ public class AuthController : ControllerBase
             var result = await _googleOAuthService.ValidateGoogleTokenAsync(googleLoginDto.IdToken);
             return Ok(result);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
         catch (GoogleTokenValidationException ex)
         {
             return Unauthorized(new { message = ex.Message });
