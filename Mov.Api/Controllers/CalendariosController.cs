@@ -40,6 +40,10 @@ public class CalendariosController : ControllerBase
             var result = await _service.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ex.Message);
+        }
         catch (FluentValidation.ValidationException ex)
         {
             return BadRequest(ex.Errors.Select(e => e.ErrorMessage));
@@ -59,6 +63,10 @@ public class CalendariosController : ControllerBase
         catch (KeyNotFoundException ex)
         {
             return NotFound(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ex.Message);
         }
         catch (FluentValidation.ValidationException ex)
         {

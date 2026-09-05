@@ -7,9 +7,6 @@ public class CreateCalendarioValidator : AbstractValidator<CreateCalendarioDto>
 {
     public CreateCalendarioValidator()
     {
-        RuleFor(x => x.EscolaId)
-            .NotEmpty().WithMessage("EscolaId é obrigatório");
-
         RuleFor(x => x.Ano)
             .NotEmpty().WithMessage("Ano é obrigatório");
 

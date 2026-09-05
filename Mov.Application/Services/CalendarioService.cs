@@ -40,9 +40,12 @@ public class CalendarioService : ICalendarioService
     {
         await _createValidator.ValidateAndThrowAsync(dto);
 
+        var existentes = await _repository.GetAllAsync();
+        if (existentes.Any(c => c.Ano == dto.Ano))
+            throw new InvalidOperationException($"Já existe um calendário global para o ano {dto.Ano}");
+
         var calendario = new Calendario
         {
-            EscolaId = dto.EscolaId,
             Ano = dto.Ano,
             DataInicio = dto.DataInicio,
             DataFim = dto.DataFim,
@@ -61,7 +64,13 @@ public class CalendarioService : ICalendarioService
         if (existing == null)
             throw new KeyNotFoundException($"Calendário com ID {dto.Id} não encontrado");
 
-        existing.EscolaId = dto.EscolaId;
+        if (existing.Ano != dto.Ano)
+        {
+            var existentes = await _repository.GetAllAsync();
+            if (existentes.Any(c => c.Ano == dto.Ano && c.Id != dto.Id))
+                throw new InvalidOperationException($"Já existe um calendário global para o ano {dto.Ano}");
+        }
+
         existing.Ano = dto.Ano;
         existing.DataInicio = dto.DataInicio;
         existing.DataFim = dto.DataFim;
